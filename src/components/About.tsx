@@ -1,25 +1,10 @@
 import Image from "next/image";
 import Reveal from "./Reveal";
 
-const stats = [
-  { value: "10K+", label: "Students" },
-  { value: "50+", label: "Programs" },
-];
-
 export default function About() {
   return (
     <section id="about" className="relative overflow-hidden bg-white py-16 sm:py-20">
       <div className="mx-auto max-w-[1300px] px-4">
-        {/* Stats strip */}
-        <div className="mb-12 flex flex-wrap justify-center gap-10">
-          {stats.map((s) => (
-            <div key={s.label} className="text-center">
-              <div className="text-4xl font-extrabold brand-gradient-text">{s.value}</div>
-              <div className="text-sm font-medium text-muted">{s.label}</div>
-            </div>
-          ))}
-        </div>
-
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <Reveal>
             <div className="relative">

@@ -2,13 +2,7 @@ import PageBanner from "@/components/PageBanner";
 import SectionLayout from "@/components/SectionLayout";
 import Reveal from "@/components/Reveal";
 import { aboutMenu } from "@/data/content";
-import {
-  ContentEyebrow,
-  SectionTitle,
-  StatRow,
-  FeatureGrid,
-  CTABand,
-} from "@/components/content-blocks";
+import { ContentEyebrow, SectionTitle, FeatureGrid, CTABand } from "@/components/content-blocks";
 
 export default function AboutPage() {
   return (
@@ -24,14 +18,7 @@ export default function AboutPage() {
         <Reveal>
           <ContentEyebrow>🏛️ Our University</ContentEyebrow>
           <SectionTitle>About Sengol International University</SectionTitle>
-          <StatRow
-            stats={[
-              { value: "2025", label: "Established" },
-              { value: "50+", label: "Programs" },
-              { value: "1000+", label: "Students" },
-            ]}
-          />
-          <p className="text-[15px] leading-relaxed text-ink/80">
+          <p className="mt-6 text-[15px] leading-relaxed text-ink/80">
             Sengol International University is a State Private University Established by Act No. 14 of
             2025 Sikkim State Legislative Assembly &amp; approved by UGC under section 2 (F) of the
             UGC Act 1956 in 2025.

@@ -18,6 +18,17 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [loginOpen, setLoginOpen] = useState(false);
+  const [search, setSearch] = useState<Record<string, string>>({});
+
+  // Dropdowns with many items get a search box
+  const isSearchable = (count: number) => count > 8;
+  const filterItems = (
+    label: string,
+    items: { label: string; href: string }[]
+  ) => {
+    const q = (search[label] ?? "").trim().toLowerCase();
+    return q ? items.filter((d) => d.label.toLowerCase().includes(q)) : items;
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -166,17 +177,35 @@ export default function Header() {
                   {n.dropdown && <span className="text-xs text-brand-1">▾</span>}
                 </Link>
                 {n.dropdown && (
-                  <div className="invisible absolute left-0 top-full z-50 max-h-[70vh] w-72 translate-y-1 overflow-y-auto rounded-xl border border-brand-cream bg-white p-2 opacity-0 shadow-[0_18px_40px_rgba(49,37,24,0.16)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-                    {n.dropdown.map((d) => (
-                      <Link
-                        key={d.href + d.label}
-                        href={d.href}
-                        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink/80 transition hover:bg-brand-cream hover:text-brand-1"
-                      >
-                        <span className="h-1.5 w-1.5 rounded-full bg-brand-1" />
-                        {d.label}
-                      </Link>
-                    ))}
+                  <div className="invisible absolute left-0 top-full z-50 w-72 translate-y-1 rounded-xl border border-brand-cream bg-white p-2 opacity-0 shadow-[0_18px_40px_rgba(49,37,24,0.16)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+                    {isSearchable(n.dropdown.length) && (
+                      <input
+                        type="text"
+                        value={search[n.label] ?? ""}
+                        onChange={(e) =>
+                          setSearch((s) => ({ ...s, [n.label]: e.target.value }))
+                        }
+                        placeholder={`Search ${n.label.toLowerCase()}…`}
+                        className="mb-2 w-full rounded-lg border border-brand-cream bg-brand-light/40 px-3 py-2 text-sm font-medium text-ink outline-none transition focus:border-brand-1 focus:bg-white"
+                      />
+                    )}
+                    <div className="max-h-[60vh] overflow-y-auto">
+                      {filterItems(n.label, n.dropdown).map((d) => (
+                        <Link
+                          key={d.href + d.label}
+                          href={d.href}
+                          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink/80 transition hover:bg-brand-cream hover:text-brand-1"
+                        >
+                          <span className="h-1.5 w-1.5 rounded-full bg-brand-1" />
+                          {d.label}
+                        </Link>
+                      ))}
+                      {filterItems(n.label, n.dropdown).length === 0 && (
+                        <div className="px-3 py-4 text-center text-sm text-muted">
+                          No matches found
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
               </li>
@@ -282,18 +311,34 @@ export default function Header() {
                           </button>
                         </div>
                         {openGroup === n.label && (
-                          <div className="mb-2 ml-3 space-y-0.5 border-l-2 border-brand-cream pl-2">
-                            {n.dropdown.map((d) => (
-                              <Link
-                                key={d.href + d.label}
-                                href={d.href}
-                                onClick={closeMenu}
-                                className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink/75 transition hover:bg-brand-cream hover:text-brand-1"
-                              >
-                                <span className="h-1.5 w-1.5 rounded-full bg-brand-1" />
-                                {d.label}
-                              </Link>
-                            ))}
+                          <div className="mb-2 ml-3 border-l-2 border-brand-cream pl-2">
+                            {isSearchable(n.dropdown.length) && (
+                              <input
+                                type="text"
+                                value={search[n.label] ?? ""}
+                                onChange={(e) =>
+                                  setSearch((s) => ({ ...s, [n.label]: e.target.value }))
+                                }
+                                placeholder={`Search ${n.label.toLowerCase()}…`}
+                                className="mb-1.5 ml-1 w-[calc(100%-0.25rem)] rounded-lg border border-brand-cream bg-brand-light/40 px-3 py-2 text-sm font-medium text-ink outline-none transition focus:border-brand-1 focus:bg-white"
+                              />
+                            )}
+                            <div className="max-h-72 space-y-0.5 overflow-y-auto">
+                              {filterItems(n.label, n.dropdown).map((d) => (
+                                <Link
+                                  key={d.href + d.label}
+                                  href={d.href}
+                                  onClick={closeMenu}
+                                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink/75 transition hover:bg-brand-cream hover:text-brand-1"
+                                >
+                                  <span className="h-1.5 w-1.5 rounded-full bg-brand-1" />
+                                  {d.label}
+                                </Link>
+                              ))}
+                              {filterItems(n.label, n.dropdown).length === 0 && (
+                                <div className="px-3 py-3 text-sm text-muted">No matches found</div>
+                              )}
+                            </div>
                           </div>
                         )}
                       </>
