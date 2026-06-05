@@ -1,0 +1,69 @@
+import ProgramTemplate, { type ProgramData } from "@/components/ProgramTemplate";
+
+const data: ProgramData = {
+  slug: "school_engineering_technology",
+  eyebrow: "Engineering Excellence",
+  title: "School of Engineering & Technology",
+  description:
+    "Pioneering the future of engineering through innovative curriculum, cutting-edge research, and industry-focused training programs designed to create tomorrow's engineering leaders.",
+  features: [
+    {
+      icon: "🔬",
+      title: "Advanced Engineering Labs",
+      text: "State-of-the-art laboratories equipped with cutting-edge technology for hands-on learning.",
+    },
+    {
+      icon: "💡",
+      title: "Innovation Focus",
+      text: "Emphasis on research, innovation, and developing solutions for real-world engineering challenges.",
+    },
+    {
+      icon: "🤝",
+      title: "Industry Partnerships",
+      text: "Strong collaborations with leading engineering companies for internships and placements.",
+    },
+    {
+      icon: "🛠️",
+      title: "Practical Training",
+      text: "Comprehensive practical training programs to bridge the gap between theory and application.",
+    },
+  ],
+  tabs: [
+    {
+      label: "Bachelor's Program",
+      courses: [
+        { name: "B.Tech in Aeronautical Engineering", duration: "8 Sem", eligibility: "12th (PCM)" },
+        { name: "B.Tech in Agriculture", duration: "8 Sem", eligibility: "12th (PCM)" },
+        { name: "B.Tech in Applied Electronics and Instrumentation", duration: "8 Sem", eligibility: "12th (PCM)" },
+        { name: "B.Tech in Automobile", duration: "8 Sem", eligibility: "12th (PCM)" },
+      ],
+    },
+    { label: "Bachelor's Lateral Program", courses: [] },
+    { label: "Master's Program", courses: [] },
+    { label: "Diploma Program", courses: [] },
+    { label: "Certificate Program", courses: [] },
+  ],
+  intro: {
+    heading: "Engineering Programmes - An Introduction",
+    text: "Engineering is the application of knowledge in the form of science, mathematics, and empirical evidence, to the innovation, design, construction, operation and maintenance of structures, machines, materials, devices, systems, processes, and organizations. The discipline of engineering encompasses a broad range of more specialized fields of engineering, each with a more specific emphasis on particular areas of applied mathematics, applied science, and types of application.",
+  },
+  about: {
+    heading: "About School of Engineering and Technology",
+    text: "School of Engineering & Technology offers the best under Graduate, Postgraduate and Doctoral programmes in various branches of engineering such as civil, mechanical, electrical, etc. so that you don't have to search for the best engineering colleges. The school follows a well proven pedagogy of sharing knowledge with the young and vibrant minds of the Nation. Our college of engineering is enriched with experienced, dedicated and knowledgeable faculty members. With an excellent infrastructure facility and with innovative teaching and learning methods. Through innovation, creativity and reform SET will strive to make this a Centre of Excellence.",
+  },
+  objective: {
+    heading: "Objective",
+    lead: "The programmes under the School of Engineering & Technology are designed to enable students to:",
+    points: [
+      "Gain sufficient knowledge and understanding of the appropriate scientific and mathematical fundamentals necessary to develop their professional skills",
+      "Be proficient in integrating knowledge and applying their understanding in identifying problems and producing powerful solutions",
+      "Have awareness and understanding of different cultures and social conditions",
+      "Attain professional competence, intellectual maturity and personal growth along with a commitment for ethical development of the industry",
+      "Have effective written, oral, and graphic communication skills",
+    ],
+  },
+};
+
+export default function Page() {
+  return <ProgramTemplate data={data} />;
+}
