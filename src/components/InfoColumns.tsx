@@ -24,9 +24,9 @@ const columns = [
 export default function InfoColumns() {
   return (
     <section className="bg-gradient-to-b from-white to-brand-light/40 py-16">
-      <div className="mx-auto grid max-w-[1400px] gap-6 px-4 lg:grid-cols-3">
+      <div className="no-scrollbar mx-auto flex max-w-[1400px] snap-x snap-mandatory gap-6 overflow-x-auto px-4 pb-2 lg:grid lg:grid-cols-3 lg:overflow-visible lg:pb-0">
         {columns.map((c, i) => (
-          <Reveal key={c.title} delay={i * 110}>
+          <Reveal key={c.title} delay={i * 110} className="w-[80%] shrink-0 snap-start sm:w-[55%] lg:w-auto">
             <div className="flex h-full flex-col rounded-2xl bg-white shadow-[0_10px_30px_rgba(49,37,24,0.08)] ring-1 ring-brand-cream">
               <div className="flex items-center gap-2 border-b border-brand-cream px-6 py-4 text-sm font-bold uppercase tracking-wide text-ink">
                 <span className="grid h-8 w-8 place-items-center rounded-lg brand-gradient text-white">

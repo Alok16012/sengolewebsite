@@ -29,9 +29,9 @@ export default function StudentFeedback() {
           </p>
         </div>
 
-        <div className="grid gap-7 md:grid-cols-3">
+        <div className="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-6 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-3 md:gap-7 md:overflow-visible md:px-0 md:pb-0">
           {studentFeedback.map((r, i) => (
-            <Reveal key={r.name} delay={i * 110}>
+            <Reveal key={r.name} delay={i * 110} className="w-[82%] shrink-0 snap-start md:w-auto">
               <div className="relative h-full rounded-2xl bg-white p-7 shadow-[0_10px_30px_rgba(49,37,24,0.08)] ring-1 ring-brand-cream">
                 <Stars count={r.stars} />
                 <p className="mt-4 text-[15px] leading-relaxed text-ink">&quot;{r.text}&quot;</p>

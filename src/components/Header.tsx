@@ -231,10 +231,25 @@ export default function Header() {
               onClick={closeMenu}
               className="fixed inset-0 top-0 z-40 bg-black/40 backdrop-blur-sm"
             />
-            <div className="absolute inset-x-0 top-full z-50 max-h-[80vh] overflow-y-auto border-t border-brand-cream bg-white shadow-xl">
-              <ul className="divide-y divide-brand-cream/70 px-2 py-2 text-[15px] font-semibold text-ink">
+            <div className="absolute inset-x-0 top-full z-50 flex max-h-[82vh] flex-col overflow-y-auto border-t border-brand-cream bg-white shadow-2xl">
+              {/* Drawer heading */}
+              <div className="flex items-center justify-between bg-brand-light/60 px-4 py-3">
+                <span className="text-xs font-bold uppercase tracking-[0.18em] text-brand-1">
+                  Menu
+                </span>
+                <button
+                  type="button"
+                  onClick={closeMenu}
+                  aria-label="Close menu"
+                  className="text-sm font-semibold text-muted transition hover:text-brand-1"
+                >
+                  Close ✕
+                </button>
+              </div>
+
+              <ul className="px-2 py-2 text-[15px] font-semibold text-ink">
                 {navItems.map((n) => (
-                  <li key={n.label}>
+                  <li key={n.label} className="border-b border-brand-cream/60 last:border-0">
                     {n.dropdown ? (
                       <>
                         <div className="flex items-center">
@@ -251,7 +266,11 @@ export default function Header() {
                             onClick={() =>
                               setOpenGroup((g) => (g === n.label ? null : n.label))
                             }
-                            className="grid h-10 w-10 place-items-center text-brand-1"
+                            className={`grid h-9 w-9 place-items-center rounded-lg transition ${
+                              openGroup === n.label
+                                ? "bg-brand-1 text-white"
+                                : "bg-brand-cream text-brand-1"
+                            }`}
                           >
                             <span
                               className={`transition-transform ${
@@ -290,7 +309,36 @@ export default function Header() {
                   </li>
                 ))}
               </ul>
-              <div className="flex gap-2 border-t border-brand-cream px-4 py-3">
+
+              {/* Login links */}
+              <div className="border-t border-brand-cream px-4 py-3">
+                <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-muted">
+                  Login Portals
+                </span>
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  <a
+                    href="https://sengoleit.vercel.app/login"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={closeMenu}
+                    className="flex items-center justify-center gap-1.5 rounded-[10px] bg-brand-cream px-3 py-2.5 text-sm font-semibold text-brand-1 transition hover:bg-brand-1 hover:text-white"
+                  >
+                    🏛️ Centre
+                  </a>
+                  <a
+                    href="https://sengoleit.vercel.app/student/login"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={closeMenu}
+                    className="flex items-center justify-center gap-1.5 rounded-[10px] bg-brand-cream px-3 py-2.5 text-sm font-semibold text-brand-1 transition hover:bg-brand-1 hover:text-white"
+                  >
+                    🎓 Student
+                  </a>
+                </div>
+              </div>
+
+              {/* CTAs */}
+              <div className="flex gap-2 px-4 pb-3">
                 <Link
                   href="/application-form"
                   onClick={closeMenu}
@@ -305,6 +353,33 @@ export default function Header() {
                 >
                   📝 Enquire
                 </Link>
+              </div>
+
+              {/* Contact + socials */}
+              <div className="border-t border-brand-cream bg-brand-light/40 px-4 py-3">
+                <a
+                  href="mailto:info@sengolinternationaluniversity.edu.in"
+                  className="block truncate text-sm font-medium text-brand-1"
+                >
+                  ✉️ info@sengolinternationaluniversity.edu.in
+                </a>
+                <a href="tel:+919205299887" className="mt-1 block text-sm font-medium text-ink/70">
+                  📞 +91-9205299887
+                </a>
+                <div className="mt-3 flex items-center gap-2">
+                  {socials.map((s) => (
+                    <a
+                      key={s.label}
+                      href="#"
+                      aria-label={s.label}
+                      className="grid h-9 w-9 place-items-center rounded-full bg-brand-cream text-brand-3 transition hover:bg-brand-1 hover:text-white"
+                    >
+                      <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
+                        <path d={s.path} />
+                      </svg>
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

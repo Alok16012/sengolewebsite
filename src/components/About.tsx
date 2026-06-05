@@ -55,9 +55,9 @@ export default function About() {
                 through innovative learning, expert faculty, and a student-centric environment.
               </p>
 
-              <div className="mb-8 grid gap-5 sm:grid-cols-2">
-                <div className="rounded-2xl border border-brand-cream bg-brand-light/40 p-5">
-                  <div className="mb-3 grid h-11 w-11 place-items-center rounded-xl brand-gradient text-white">
+              <div className="mb-8 grid grid-cols-2 gap-3 sm:gap-5">
+                <div className="rounded-2xl border border-brand-cream bg-brand-light/40 p-4 sm:p-5">
+                  <div className="mb-3 grid h-10 w-10 place-items-center rounded-xl brand-gradient text-white sm:h-11 sm:w-11">
                     👥
                   </div>
                   <h3 className="mb-1.5 font-bold text-ink">Our Mission</h3>
@@ -66,8 +66,8 @@ export default function About() {
                     and holistic development.
                   </p>
                 </div>
-                <div className="rounded-2xl border border-brand-cream bg-brand-light/40 p-5">
-                  <div className="mb-3 grid h-11 w-11 place-items-center rounded-xl brand-gradient text-white">
+                <div className="rounded-2xl border border-brand-cream bg-brand-light/40 p-4 sm:p-5">
+                  <div className="mb-3 grid h-10 w-10 place-items-center rounded-xl brand-gradient text-white sm:h-11 sm:w-11">
                     🎯
                   </div>
                   <h3 className="mb-1.5 font-bold text-ink">Our Vision</h3>

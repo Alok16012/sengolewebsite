@@ -35,9 +35,9 @@ export default function LatestUpdates() {
           </p>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-6 overflow-x-auto px-4 pb-2 lg:mx-0 lg:grid lg:grid-cols-3 lg:overflow-visible lg:px-0 lg:pb-0">
           {/* University News */}
-          <Reveal>
+          <Reveal className="w-[85%] shrink-0 snap-start sm:w-[60%] lg:w-auto">
             <div className="h-full rounded-2xl bg-white shadow-[0_10px_30px_rgba(49,37,24,0.08)] ring-1 ring-brand-cream">
               <PanelHeader icon="📣" title="University" accent="NEWS" />
               <ul className="max-h-[360px] space-y-3 overflow-hidden p-5">
@@ -56,7 +56,7 @@ export default function LatestUpdates() {
           </Reveal>
 
           {/* Notice Board */}
-          <Reveal delay={120}>
+          <Reveal delay={120} className="w-[85%] shrink-0 snap-start sm:w-[60%] lg:w-auto">
             <div className="h-full rounded-2xl bg-white shadow-[0_10px_30px_rgba(49,37,24,0.08)] ring-1 ring-brand-cream">
               <PanelHeader icon="📋" title="Notice" accent="BOARD" />
               <ul className="space-y-3 p-5">
@@ -73,7 +73,7 @@ export default function LatestUpdates() {
           </Reveal>
 
           {/* Events */}
-          <Reveal delay={240}>
+          <Reveal delay={240} className="w-[85%] shrink-0 snap-start sm:w-[60%] lg:w-auto">
             <div className="h-full rounded-2xl bg-white shadow-[0_10px_30px_rgba(49,37,24,0.08)] ring-1 ring-brand-cream">
               <PanelHeader icon="🗓️" title="Events" accent="" />
               <div className="p-5">

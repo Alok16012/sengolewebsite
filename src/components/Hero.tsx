@@ -121,14 +121,14 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Quick action cards — visible on all screens */}
-      <div className="relative mx-auto max-w-[1400px] px-4 pb-14 sm:px-6">
-        <div className="grid gap-4 sm:grid-cols-3">
+      {/* Quick action cards — horizontal scroll on mobile, grid on desktop */}
+      <div className="relative mx-auto max-w-[1400px] pb-14">
+        <div className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:px-6">
           {quickActions.map((c) => (
             <Link
               key={c.title}
               href={c.href}
-              className="group flex items-center gap-3 rounded-2xl bg-white/[0.07] px-5 py-4 ring-1 ring-white/15 backdrop-blur transition hover:bg-white/[0.12] hover:ring-white/30"
+              className="group flex w-[75%] shrink-0 snap-start items-center gap-3 rounded-2xl bg-white/[0.07] px-5 py-4 ring-1 ring-white/15 backdrop-blur transition hover:bg-white/[0.12] hover:ring-white/30 sm:w-auto"
             >
               <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl brand-gradient text-xl">
                 {c.icon}

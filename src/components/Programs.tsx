@@ -17,9 +17,9 @@ export default function Programs() {
           </p>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3 xl:grid-cols-4">
           {programs.map((p, i) => (
-            <Reveal key={p.title} delay={(i % 4) * 90}>
+            <Reveal key={p.title} delay={(i % 4) * 90} className="w-[78%] shrink-0 snap-start sm:w-auto">
               <article className="group flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-[0_10px_30px_rgba(49,37,24,0.08)] ring-1 ring-brand-cream transition hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(49,37,24,0.16)]">
                 <div className="relative h-44 overflow-hidden">
                   <Image

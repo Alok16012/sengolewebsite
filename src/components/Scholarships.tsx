@@ -16,9 +16,9 @@ export default function Scholarships() {
           postgraduate students to help them achieve their academic goals.
         </p>
 
-        <div className="mt-12 grid gap-7 md:grid-cols-3">
+        <div className="no-scrollbar mt-12 -mx-4 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-2 text-left md:mx-0 md:grid md:grid-cols-3 md:gap-7 md:overflow-visible md:px-0 md:pb-0">
           {scholarships.map((s, i) => (
-            <Reveal key={s.title} delay={i * 110}>
+            <Reveal key={s.title} delay={i * 110} className="w-[80%] shrink-0 snap-start md:w-auto">
               <div className="h-full rounded-2xl border border-brand-cream bg-brand-light/30 p-8 text-center shadow-[0_10px_30px_rgba(49,37,24,0.06)] transition hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(49,37,24,0.12)]">
                 <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-2xl brand-gradient text-3xl">
                   {s.icon}
