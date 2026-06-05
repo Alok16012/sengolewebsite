@@ -3,12 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const stats = [
-  { value: "17+", label: "Schools" },
-  { value: "50+", label: "Programs" },
-  { value: "1000+", label: "Students" },
-];
-
 const quickActions = [
   { icon: "🎓", title: "Admission 2026", sub: "Apply Now", href: "/application-form" },
   { icon: "📝", title: "Enquiry Now", sub: "Get in touch", href: "/enquiry-form" },
@@ -59,20 +53,6 @@ export default function Hero() {
             >
               Explore Programs
             </Link>
-          </div>
-
-          {/* Stats */}
-          <div className="mx-auto mt-10 grid max-w-md grid-cols-3 gap-4 lg:mx-0">
-            {stats.map((s) => (
-              <div key={s.label} className="text-center lg:text-left">
-                <div className="font-display text-2xl font-extrabold text-brand-cream sm:text-3xl">
-                  {s.value}
-                </div>
-                <div className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-white/60 sm:text-xs">
-                  {s.label}
-                </div>
-              </div>
-            ))}
           </div>
         </div>
 
