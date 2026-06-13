@@ -4,7 +4,7 @@ import crypto from "crypto";
 // on the test gateway (no real money). Used as a fallback so test mode works
 // out of the box; override with PAYU_KEY/PAYU_SALT env vars when needed.
 const TEST_KEY = "gtKFFx";
-const TEST_SALT = "eCwWELxi";
+const TEST_SALT = "4R38IvwiV57FwVpsgOvTXBdLE4tHUXFW";
 
 // PayU credentials come from environment variables. See .env.local.example.
 // PAYU_MODE: "test" uses PayU's test gateway, "live" uses production.
