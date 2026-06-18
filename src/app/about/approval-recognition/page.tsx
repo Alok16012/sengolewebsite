@@ -87,7 +87,7 @@ export default function ApprovalRecognitionPage() {
         <CTABand
           title="Fully Authorized & Recognized"
           text="A legally established institution with full government recognition and UGC approval, ensuring quality education and valid degrees."
-          primary={{ label: "View Gazette Copy", href: "/about/approval-recognition" }}
+          primary={{ label: "View Gazette Copy", href: "/Gazette_Notification.pdf", newTab: true }}
           secondary={{ label: "Contact Registrar", href: "/contact" }}
         />
       </SectionLayout>

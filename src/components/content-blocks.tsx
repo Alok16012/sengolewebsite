@@ -69,9 +69,11 @@ export function CTABand({
 }: {
   title: string;
   text: string;
-  primary?: { label: string; href: string };
-  secondary?: { label: string; href: string };
+  primary?: { label: string; href: string; newTab?: boolean };
+  secondary?: { label: string; href: string; newTab?: boolean };
 }) {
+  const newTabProps = (newTab?: boolean) =>
+    newTab ? { target: "_blank", rel: "noopener noreferrer" } : {};
   return (
     <div className="relative mt-10 overflow-hidden rounded-3xl brand-gradient p-10 text-center text-white shadow-xl">
       <h3 className="text-2xl font-extrabold sm:text-3xl">{title}</h3>
@@ -80,6 +82,7 @@ export function CTABand({
         {primary && (
           <Link
             href={primary.href}
+            {...newTabProps(primary.newTab)}
             className="rounded-xl bg-white px-7 py-3.5 font-semibold text-brand-1 transition hover:bg-white/90"
           >
             {primary.label}
@@ -88,6 +91,7 @@ export function CTABand({
         {secondary && (
           <Link
             href={secondary.href}
+            {...newTabProps(secondary.newTab)}
             className="rounded-xl bg-white/15 px-7 py-3.5 font-semibold text-white ring-1 ring-white/40 transition hover:bg-white/25"
           >
             {secondary.label}
