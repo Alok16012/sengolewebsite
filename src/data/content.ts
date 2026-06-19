@@ -176,10 +176,10 @@ export const navItems = [
       { label: "Credit Transfer", href: "/admission/credit-transfer" },
       { label: "Refund Policy", href: "/admission/refund-policy" },
       { label: "Application Form", href: "/application-form" },
-      { label: "Track Application", href: "/application-status" },
       { label: "Enquiry Form", href: "/enquiry-form" },
     ],
   },
+  { label: "Track Application", href: "/application-status" },
   { label: "Contact", href: "/contact" },
 ];
 

@@ -241,6 +241,13 @@ export default function Header() {
               📥 Download
             </Link>
             <Link
+              href="/application-status"
+              className="inline-flex items-center gap-1.5 rounded-[10px] bg-brand-1 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 sm:gap-2 sm:px-5"
+            >
+              🔍 <span className="hidden sm:inline">Track Application</span>
+              <span className="sm:hidden">Track</span>
+            </Link>
+            <Link
               href="/pay-now"
               className="inline-flex items-center gap-1.5 rounded-[10px] bg-emerald-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 sm:gap-2 sm:px-5"
             >
