@@ -23,7 +23,7 @@ const options: Option[] = [
     value: "new",
     label: "New Computer Institute",
     description: "Register your computer institute as a new Online Information Center.",
-    href: "/application-form",
+    href: "/online-information-centers/new",
     icon: "🎓",
   },
 ];
