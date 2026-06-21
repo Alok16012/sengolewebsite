@@ -24,6 +24,11 @@ export default function ApplicationStatusForm() {
       email: data.get("email"),
     };
 
+    // Open the result tab synchronously, as a direct response to the click, so
+    // the browser's popup blocker treats it as user-initiated. The result page
+    // waits (polls localStorage) until we write the data below.
+    const resultWindow = window.open("/application-status/result", "_blank");
+
     try {
       const res = await fetch("/api/application-status", {
         method: "POST",
@@ -33,20 +38,26 @@ export default function ApplicationStatusForm() {
       const json = await res.json();
       if (!res.ok) {
         setError(json.error ?? "Could not fetch your application status. Please try again.");
+        resultWindow?.close();
         setSubmitting(false);
         return;
       }
-      // Stash the result and move to the dedicated result page. We pass it via
-      // sessionStorage (not the URL) to keep the email and other PII out of the
-      // address bar and browser history.
+      // Pass the result via localStorage so the newly opened tab can read it
+      // (sessionStorage is per-tab and wouldn't be visible there). We keep the
+      // email and other PII out of the URL entirely.
       try {
-        sessionStorage.setItem(STATUS_STORAGE_KEY, JSON.stringify(json as StatusResult));
+        localStorage.setItem(STATUS_STORAGE_KEY, JSON.stringify(json as StatusResult));
       } catch {
-        // sessionStorage can throw in private mode; fall through to navigation.
+        // localStorage can throw in private mode; fall back to same-tab nav.
       }
-      router.push("/application-status/result");
+      // If the popup was blocked (no window handle), navigate in this tab.
+      if (!resultWindow) {
+        router.push("/application-status/result");
+      }
+      setSubmitting(false);
     } catch {
       setError("Network error. Please check your connection and try again.");
+      resultWindow?.close();
       setSubmitting(false);
     }
   }

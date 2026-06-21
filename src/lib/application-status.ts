@@ -1,6 +1,7 @@
 // Shared types for the Track Application flow. The form fetches the status,
-// stashes it in sessionStorage, and the result page reads it back — this keeps
-// personal data (email) out of the URL.
+// stashes it in localStorage, and the result page (opened in a new tab) reads
+// it back — localStorage is shared across tabs, and this keeps personal data
+// (email) out of the URL.
 
 export type StatusResult = {
   found: true;

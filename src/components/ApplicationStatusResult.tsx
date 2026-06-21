@@ -53,16 +53,41 @@ const backLinkClass =
   "inline-flex items-center justify-center gap-2 rounded-xl bg-brand-1 px-7 py-3.5 font-semibold text-white shadow-md transition hover:opacity-95";
 
 export default function ApplicationStatusResult() {
-  // `undefined` = still reading sessionStorage, `null` = nothing found.
+  // `undefined` = still waiting for the data, `null` = nothing found.
   const [result, setResult] = useState<StatusResult | null | undefined>(undefined);
 
   useEffect(() => {
-    try {
-      const raw = sessionStorage.getItem(STATUS_STORAGE_KEY);
-      setResult(raw ? (JSON.parse(raw) as StatusResult) : null);
-    } catch {
-      setResult(null);
+    // This tab is opened by the form *before* the status fetch finishes, so the
+    // data may not be in localStorage yet. Poll for it (also catches the case
+    // where the user just opened this page directly with nothing stored).
+    let tries = 0;
+    const maxTries = 24; // ~6s at 250ms
+
+    function check(): boolean {
+      try {
+        const raw = localStorage.getItem(STATUS_STORAGE_KEY);
+        if (raw) {
+          setResult(JSON.parse(raw) as StatusResult);
+          return true;
+        }
+      } catch {
+        setResult(null);
+        return true;
+      }
+      return false;
     }
+
+    if (check()) return;
+
+    const id = setInterval(() => {
+      tries += 1;
+      if (check() || tries >= maxTries) {
+        clearInterval(id);
+        if (tries >= maxTries) setResult(null);
+      }
+    }, 250);
+
+    return () => clearInterval(id);
   }, []);
 
   if (result === undefined) {
