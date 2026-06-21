@@ -15,8 +15,8 @@ const options: Option[] = [
   {
     value: "existing",
     label: "Existing",
-    description: "Already an Online Information Center? Track your application here.",
-    href: "/application-status",
+    description: "Already an Online Information Center? Pay your fee here.",
+    href: "/online-information-centers/existing",
     icon: "🏢",
   },
   {
