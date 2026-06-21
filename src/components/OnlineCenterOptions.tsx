@@ -9,6 +9,7 @@ type Option = {
   description: string;
   href: string;
   icon: string;
+  note?: string;
 };
 
 const options: Option[] = [
@@ -18,6 +19,7 @@ const options: Option[] = [
     description: "Already an Online Information Center? Pay your fee here.",
     href: "/online-information-centers/existing",
     icon: "🏢",
+    note: "Approval Code which shall be provided by Dy. Director to that center after verification of the center infrastructure on spot or through video call.",
   },
   {
     value: "new",
@@ -65,6 +67,11 @@ export default function OnlineCenterOptions() {
               </span>
               <h3 className="mt-5 text-xl font-extrabold text-ink">{opt.label}</h3>
               <p className="mt-2 text-[15px] leading-relaxed text-muted">{opt.description}</p>
+              {opt.note && (
+                <p className="mt-4 rounded-lg bg-brand-light px-3 py-2 text-xs leading-relaxed text-muted">
+                  <span className="font-semibold text-ink">Note:</span> {opt.note}
+                </p>
+              )}
             </button>
           );
         })}
