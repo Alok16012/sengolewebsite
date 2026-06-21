@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { type ApplicationKind, type StatusResult } from "@/lib/application-status";
 import ApplicationStatusCard from "@/components/ApplicationStatusCard";
+import { ContentEyebrow, SectionTitle } from "@/components/content-blocks";
 
 const inputClass =
   "w-full rounded-xl bg-white px-4 py-3 text-[15px] text-ink ring-1 ring-brand-cream transition placeholder:text-muted/70 focus:outline-none focus:ring-2 focus:ring-brand-1";
@@ -12,6 +13,8 @@ type Props = {
   // Which application type this form looks up. Defaults to "center" so the
   // existing center page keeps working without changes.
   kind?: ApplicationKind;
+  eyebrow: string;
+  title: string;
 };
 
 // Per-type config: which API to call and the application-number placeholder.
@@ -26,7 +29,7 @@ const CONFIG: Record<ApplicationKind, { apiPath: string; placeholder: string }> 
   },
 };
 
-export default function ApplicationStatusForm({ kind = "center" }: Props) {
+export default function ApplicationStatusForm({ kind = "center", eyebrow, title }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<StatusResult | null>(null);
@@ -63,13 +66,27 @@ export default function ApplicationStatusForm({ kind = "center" }: Props) {
     setSubmitting(false);
   }
 
+  // Once a result is found, hide the form entirely and show only the card.
+  if (result) {
+    return (
+      <div className="mt-8">
+        <ApplicationStatusCard result={result} />
+        <button
+          type="button"
+          onClick={() => setResult(null)}
+          className="mt-6 text-sm font-semibold text-brand-1 transition hover:opacity-80"
+        >
+          ← Check another application
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <div
-      className={`mt-8 grid gap-8 ${
-        result ? "lg:grid-cols-2 lg:items-start" : ""
-      }`}
-    >
-      <form onSubmit={handleSubmit} className="grid gap-5 sm:grid-cols-2">
+    <>
+      <ContentEyebrow>{eyebrow}</ContentEyebrow>
+      <SectionTitle>{title}</SectionTitle>
+      <form onSubmit={handleSubmit} className="mt-8 grid gap-5 sm:grid-cols-2">
         <div>
           <label htmlFor="applicationNo" className={labelClass}>
             Application Number *
@@ -113,8 +130,6 @@ export default function ApplicationStatusForm({ kind = "center" }: Props) {
           </button>
         </div>
       </form>
-
-      {result && <ApplicationStatusCard result={result} />}
-    </div>
+    </>
   );
 }
