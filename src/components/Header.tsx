@@ -251,7 +251,7 @@ export default function Header() {
               href="/application-form"
               className="hidden items-center gap-2 rounded-[10px] bg-brand-3 px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 md:inline-flex"
             >
-              📥 Download
+              🏢 Online Information Centers
             </Link>
             <Link
               href="/application-form"
@@ -409,7 +409,7 @@ export default function Header() {
                     onClick={closeMenu}
                     className="flex-1 rounded-[10px] bg-brand-3 px-4 py-2.5 text-center text-sm font-semibold text-white"
                   >
-                    📥 Download
+                    🏢 Online Information Centers
                   </Link>
                   <Link
                     href="/enquiry-form"
