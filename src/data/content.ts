@@ -183,8 +183,8 @@ export const navItems = [
     label: "Track Application",
     href: "/application-status",
     dropdown: [
-      { label: "Center Application", href: "/application-status" },
-      { label: "Student Application", href: "/application-status/student" },
+      { label: "Center Application", href: "/application-status", newTab: true },
+      { label: "Student Application", href: "/application-status/student", newTab: true },
     ],
   },
   { label: "Contact", href: "/contact" },

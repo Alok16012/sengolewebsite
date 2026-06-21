@@ -169,13 +169,21 @@ export default function Header() {
           <ul className="hidden items-center gap-0.5 text-[15px] font-semibold text-ink lg:flex">
             {navItems.map((n) => (
               <li key={n.label} className="group relative">
-                <Link
-                  href={n.href}
-                  className="flex items-center gap-1 rounded-md px-3 py-2.5 transition hover:text-brand-1"
-                >
-                  {n.label}
-                  {n.dropdown && <span className="text-xs text-brand-1">▾</span>}
-                </Link>
+                {n.dropdown ? (
+                  // A parent with a dropdown only reveals the menu (on hover) —
+                  // it does not navigate anywhere itself.
+                  <span className="flex cursor-default select-none items-center gap-1 rounded-md px-3 py-2.5 transition hover:text-brand-1">
+                    {n.label}
+                    <span className="text-xs text-brand-1">▾</span>
+                  </span>
+                ) : (
+                  <Link
+                    href={n.href}
+                    className="flex items-center gap-1 rounded-md px-3 py-2.5 transition hover:text-brand-1"
+                  >
+                    {n.label}
+                  </Link>
+                )}
                 {n.dropdown && (
                   <div className="invisible absolute left-0 top-full z-50 w-72 translate-y-1 rounded-xl border border-brand-cream bg-white p-2 opacity-0 shadow-[0_18px_40px_rgba(49,37,24,0.16)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
                     {isSearchable(n.dropdown.length) && (
@@ -190,16 +198,21 @@ export default function Header() {
                       />
                     )}
                     <div className="max-h-[60vh] overflow-y-auto">
-                      {filterItems(n.label, n.dropdown).map((d) => (
-                        <Link
-                          key={d.href + d.label}
-                          href={d.href}
-                          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink/80 transition hover:bg-brand-cream hover:text-brand-1"
-                        >
-                          <span className="h-1.5 w-1.5 rounded-full bg-brand-1" />
-                          {d.label}
-                        </Link>
-                      ))}
+                      {filterItems(n.label, n.dropdown).map((d) => {
+                        const newTab = (d as { newTab?: boolean }).newTab;
+                        return (
+                          <Link
+                            key={d.href + d.label}
+                            href={d.href}
+                            target={newTab ? "_blank" : undefined}
+                            rel={newTab ? "noopener noreferrer" : undefined}
+                            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink/80 transition hover:bg-brand-cream hover:text-brand-1"
+                          >
+                            <span className="h-1.5 w-1.5 rounded-full bg-brand-1" />
+                            {d.label}
+                          </Link>
+                        );
+                      })}
                       {filterItems(n.label, n.dropdown).length === 0 && (
                         <div className="px-3 py-4 text-center text-sm text-muted">
                           No matches found
@@ -281,20 +294,21 @@ export default function Header() {
                   <li key={n.label} className="border-b border-brand-cream/60 last:border-0">
                     {n.dropdown ? (
                       <>
-                        <div className="flex items-center">
-                          <Link
-                            href={n.href}
-                            onClick={closeMenu}
-                            className="flex-1 rounded-md px-3 py-3 transition hover:text-brand-1"
-                          >
+                        <button
+                          type="button"
+                          aria-label={`Toggle ${n.label}`}
+                          aria-expanded={openGroup === n.label}
+                          onClick={() =>
+                            setOpenGroup((g) => (g === n.label ? null : n.label))
+                          }
+                          className="flex w-full items-center"
+                        >
+                          {/* A parent with a dropdown only toggles the menu — it
+                              does not navigate anywhere itself. */}
+                          <span className="flex-1 rounded-md px-3 py-3 text-left transition hover:text-brand-1">
                             {n.label}
-                          </Link>
-                          <button
-                            type="button"
-                            aria-label={`Toggle ${n.label}`}
-                            onClick={() =>
-                              setOpenGroup((g) => (g === n.label ? null : n.label))
-                            }
+                          </span>
+                          <span
                             className={`grid h-9 w-9 place-items-center rounded-lg transition ${
                               openGroup === n.label
                                 ? "bg-brand-1 text-white"
@@ -308,8 +322,8 @@ export default function Header() {
                             >
                               ▾
                             </span>
-                          </button>
-                        </div>
+                          </span>
+                        </button>
                         {openGroup === n.label && (
                           <div className="mb-2 ml-3 border-l-2 border-brand-cream pl-2">
                             {isSearchable(n.dropdown.length) && (
@@ -324,17 +338,22 @@ export default function Header() {
                               />
                             )}
                             <div className="max-h-72 space-y-0.5 overflow-y-auto">
-                              {filterItems(n.label, n.dropdown).map((d) => (
-                                <Link
-                                  key={d.href + d.label}
-                                  href={d.href}
-                                  onClick={closeMenu}
-                                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink/75 transition hover:bg-brand-cream hover:text-brand-1"
-                                >
-                                  <span className="h-1.5 w-1.5 rounded-full bg-brand-1" />
-                                  {d.label}
-                                </Link>
-                              ))}
+                              {filterItems(n.label, n.dropdown).map((d) => {
+                                const newTab = (d as { newTab?: boolean }).newTab;
+                                return (
+                                  <Link
+                                    key={d.href + d.label}
+                                    href={d.href}
+                                    target={newTab ? "_blank" : undefined}
+                                    rel={newTab ? "noopener noreferrer" : undefined}
+                                    onClick={closeMenu}
+                                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink/75 transition hover:bg-brand-cream hover:text-brand-1"
+                                  >
+                                    <span className="h-1.5 w-1.5 rounded-full bg-brand-1" />
+                                    {d.label}
+                                  </Link>
+                                );
+                              })}
                               {filterItems(n.label, n.dropdown).length === 0 && (
                                 <div className="px-3 py-3 text-sm text-muted">No matches found</div>
                               )}
