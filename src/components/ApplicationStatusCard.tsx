@@ -25,16 +25,6 @@ const journeyLabels: Record<string, string> = {
   approved: "Approved",
 };
 
-function formatDate(value: string | null): string {
-  if (!value) return "—";
-  const d = new Date(value);
-  if (isNaN(d.getTime())) return "—";
-  const dd = String(d.getDate()).padStart(2, "0");
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const yyyy = d.getFullYear();
-  return `${dd}/${mm}/${yyyy}`;
-}
-
 function Badge({ map, value }: { map: Record<string, { label: string; tone: string }>; value: string | null }) {
   const key = (value ?? "").toLowerCase();
   const item = map[key] ?? { label: value ?? "—", tone: "bg-gray-50 text-gray-600 ring-gray-200" };
@@ -62,10 +52,6 @@ export default function ApplicationStatusCard({ result }: { result: StatusResult
           </p>
           <p className="text-lg font-extrabold text-ink">{result.applicationNo || "—"}</p>
           <p className="mt-1 text-[15px] text-ink/80">{result.centerName || "—"}</p>
-        </div>
-        <div className="text-right">
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted">Submitted On</p>
-          <p className="text-[15px] font-semibold text-ink">{formatDate(result.submittedAt)}</p>
         </div>
       </div>
 
