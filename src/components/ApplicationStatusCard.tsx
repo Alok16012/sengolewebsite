@@ -1,8 +1,4 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { STATUS_STORAGE_KEY, type StoredStatus } from "@/lib/application-status";
+import type { StatusResult } from "@/lib/application-status";
 
 const approvalLabels: Record<string, { label: string; tone: string }> = {
   pending: { label: "Under Review", tone: "bg-amber-50 text-amber-700 ring-amber-200" },
@@ -49,82 +45,16 @@ function Badge({ map, value }: { map: Record<string, { label: string; tone: stri
   );
 }
 
-const backLinkClass =
-  "inline-flex items-center justify-center gap-2 rounded-xl bg-brand-1 px-7 py-3.5 font-semibold text-white shadow-md transition hover:opacity-95";
-
-export default function ApplicationStatusResult() {
-  // `undefined` = still waiting for the data, `null` = nothing found.
-  const [stored, setStored] = useState<StoredStatus | null | undefined>(undefined);
-
-  useEffect(() => {
-    // This tab is opened by the form *before* the status fetch finishes, so the
-    // data may not be in localStorage yet. Poll for it (also catches the case
-    // where the user just opened this page directly with nothing stored).
-    let tries = 0;
-    const maxTries = 24; // ~6s at 250ms
-
-    function check(): boolean {
-      try {
-        const raw = localStorage.getItem(STATUS_STORAGE_KEY);
-        if (raw) {
-          setStored(JSON.parse(raw) as StoredStatus);
-          return true;
-        }
-      } catch {
-        setStored(null);
-        return true;
-      }
-      return false;
-    }
-
-    if (check()) return;
-
-    const id = setInterval(() => {
-      tries += 1;
-      if (check() || tries >= maxTries) {
-        clearInterval(id);
-        if (tries >= maxTries) setStored(null);
-      }
-    }, 250);
-
-    return () => clearInterval(id);
-  }, []);
-
-  if (stored === undefined) {
-    return (
-      <div className="rounded-2xl bg-white p-8 text-center ring-1 ring-brand-cream">
-        <p className="text-[15px] text-muted">Loading your application status…</p>
-      </div>
-    );
-  }
-
-  if (!stored) {
-    return (
-      <div className="rounded-2xl bg-white p-8 text-center ring-1 ring-brand-cream sm:p-10">
-        <p className="text-2xl">🔍</p>
-        <h3 className="mt-3 text-xl font-extrabold text-ink">No application loaded</h3>
-        <p className="mx-auto mt-2 max-w-md text-[15px] leading-relaxed text-muted">
-          We couldn&apos;t find your status here. Please check your application again using your
-          application number and registered email.
-        </p>
-        <div className="mt-6">
-          <Link href="/application-status" className={backLinkClass}>
-            🔍 Check Application Status
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  const result = stored.result;
-  const backPath = stored.backPath || "/application-status";
+// Presentational status card — renders a fetched result. Used inline, right
+// below the form, on the same page.
+export default function ApplicationStatusCard({ result }: { result: StatusResult }) {
   const rejected = (result.approvalStatus ?? "").toLowerCase() === "rejected";
   const currentStep = journey.indexOf((result.approvalStatus ?? "").toLowerCase());
   const effectiveStep =
     (result.approvalStatus ?? "").toLowerCase() === "hold" ? 0 : currentStep;
 
   return (
-    <div className="rounded-2xl bg-white p-6 ring-1 ring-brand-cream sm:p-8">
+    <div className="mt-8 rounded-2xl bg-white p-6 ring-1 ring-brand-cream sm:p-8">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-muted">
@@ -220,15 +150,6 @@ export default function ApplicationStatusResult() {
           </div>
         </div>
       )}
-
-      <div className="mt-8 border-t border-brand-cream pt-6">
-        <Link
-          href={backPath}
-          className="text-sm font-semibold text-brand-1 underline-offset-4 hover:underline"
-        >
-          ← Check another application
-        </Link>
-      </div>
     </div>
   );
 }

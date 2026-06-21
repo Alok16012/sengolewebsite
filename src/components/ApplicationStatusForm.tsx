@@ -1,14 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import {
-  STATUS_STORAGE_KEY,
-  STATUS_RESULT_PATH,
-  type ApplicationKind,
-  type StatusResult,
-  type StoredStatus,
-} from "@/lib/application-status";
+import { type ApplicationKind, type StatusResult } from "@/lib/application-status";
+import ApplicationStatusCard from "@/components/ApplicationStatusCard";
 
 const inputClass =
   "w-full rounded-xl bg-white px-4 py-3 text-[15px] text-ink ring-1 ring-brand-cream transition placeholder:text-muted/70 focus:outline-none focus:ring-2 focus:ring-brand-1";
@@ -20,30 +14,28 @@ type Props = {
   kind?: ApplicationKind;
 };
 
-// Per-type config: which API to call, the back path for the result page, and
-// the application-number placeholder.
-const CONFIG: Record<ApplicationKind, { apiPath: string; backPath: string; placeholder: string }> = {
+// Per-type config: which API to call and the application-number placeholder.
+const CONFIG: Record<ApplicationKind, { apiPath: string; placeholder: string }> = {
   center: {
     apiPath: "/api/application-status",
-    backPath: "/application-status",
     placeholder: "E.g. APP-2026-7K3F9A",
   },
   student: {
     apiPath: "/api/application-status/student",
-    backPath: "/application-status/student",
     placeholder: "E.g. STU-2026-7K3F9A",
   },
 };
 
 export default function ApplicationStatusForm({ kind = "center" }: Props) {
-  const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<StatusResult | null>(null);
   const config = CONFIG[kind];
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
+    setResult(null);
     setSubmitting(true);
 
     const data = new FormData(e.currentTarget);
@@ -51,11 +43,6 @@ export default function ApplicationStatusForm({ kind = "center" }: Props) {
       applicationNo: data.get("applicationNo"),
       email: data.get("email"),
     };
-
-    // Open the result tab synchronously, as a direct response to the click, so
-    // the browser's popup blocker treats it as user-initiated. The result page
-    // waits (polls localStorage) until we write the data below.
-    const resultWindow = window.open(STATUS_RESULT_PATH, "_blank");
 
     try {
       const res = await fetch(config.apiPath, {
@@ -66,33 +53,14 @@ export default function ApplicationStatusForm({ kind = "center" }: Props) {
       const json = await res.json();
       if (!res.ok) {
         setError(json.error ?? "Could not fetch your application status. Please try again.");
-        resultWindow?.close();
         setSubmitting(false);
         return;
       }
-      // Pass the result via localStorage so the newly opened tab can read it
-      // (sessionStorage is per-tab and wouldn't be visible there). We keep the
-      // email and other PII out of the URL entirely.
-      try {
-        const stored: StoredStatus = {
-          kind,
-          result: json as StatusResult,
-          backPath: config.backPath,
-        };
-        localStorage.setItem(STATUS_STORAGE_KEY, JSON.stringify(stored));
-      } catch {
-        // localStorage can throw in private mode; fall back to same-tab nav.
-      }
-      // If the popup was blocked (no window handle), navigate in this tab.
-      if (!resultWindow) {
-        router.push(STATUS_RESULT_PATH);
-      }
-      setSubmitting(false);
+      setResult(json as StatusResult);
     } catch {
       setError("Network error. Please check your connection and try again.");
-      resultWindow?.close();
-      setSubmitting(false);
     }
+    setSubmitting(false);
   }
 
   return (
@@ -141,6 +109,8 @@ export default function ApplicationStatusForm({ kind = "center" }: Props) {
           </button>
         </div>
       </form>
+
+      {result && <ApplicationStatusCard result={result} />}
     </div>
   );
 }

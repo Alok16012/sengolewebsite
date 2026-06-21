@@ -16,10 +16,6 @@ export default function StudentApplicationStatusPage() {
           <div className="rounded-2xl bg-white p-7 shadow-[0_10px_30px_rgba(49,37,24,0.08)] ring-1 ring-brand-cream sm:p-10">
             <ContentEyebrow>🎓 Student Status Check</ContentEyebrow>
             <SectionTitle>Find Your Student Application</SectionTitle>
-            <p className="mt-3 text-[15px] leading-relaxed text-muted">
-              Enter your student application number and registered email to view
-              your current status and pay any pending fee.
-            </p>
             <ApplicationStatusForm kind="student" />
           </div>
         </Reveal>
