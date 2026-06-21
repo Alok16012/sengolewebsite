@@ -64,7 +64,11 @@ export default function ApplicationStatusForm({ kind = "center" }: Props) {
   }
 
   return (
-    <div className="mt-8">
+    <div
+      className={`mt-8 grid gap-8 ${
+        result ? "lg:grid-cols-2 lg:items-start" : ""
+      }`}
+    >
       <form onSubmit={handleSubmit} className="grid gap-5 sm:grid-cols-2">
         <div>
           <label htmlFor="applicationNo" className={labelClass}>

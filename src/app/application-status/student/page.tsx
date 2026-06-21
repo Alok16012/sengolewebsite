@@ -11,7 +11,7 @@ export const metadata = {
 export default function StudentApplicationStatusPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-brand-light py-12 px-4">
-      <div className="w-full max-w-[640px]">
+      <div className="w-full max-w-[1100px]">
         <Reveal>
           <div className="rounded-2xl bg-white p-7 shadow-[0_10px_30px_rgba(49,37,24,0.08)] ring-1 ring-brand-cream sm:p-10">
             <ContentEyebrow>🎓 Student Status Check</ContentEyebrow>

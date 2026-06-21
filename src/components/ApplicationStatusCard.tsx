@@ -44,7 +44,7 @@ export default function ApplicationStatusCard({ result }: { result: StatusResult
     (result.approvalStatus ?? "").toLowerCase() === "hold" ? 0 : currentStep;
 
   return (
-    <div className="mt-8 rounded-2xl bg-white p-6 ring-1 ring-brand-cream sm:p-8">
+    <div className="rounded-2xl bg-white p-6 ring-1 ring-brand-cream sm:p-8">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-muted">
@@ -107,33 +107,17 @@ export default function ApplicationStatusCard({ result }: { result: StatusResult
         </div>
       )}
 
-      {/* Fee + payment — hidden once the payment is complete */}
-      {!result.isPaid && (
+      {/* Payment — only shown when a link exists and the fee is still unpaid */}
+      {!result.isPaid && result.paymentLinkUrl && (
         <div className="mt-7 border-t border-brand-cream pt-6">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted">Fee Amount</p>
-              <p className="text-lg font-extrabold text-ink">
-                {result.feeAmount != null ? `₹${Number(result.feeAmount).toLocaleString("en-IN")}` : "—"}
-              </p>
-            </div>
-
-            {result.paymentLinkUrl ? (
-              <a
-                href={result.paymentLinkUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-7 py-3.5 font-semibold text-white shadow-md transition hover:bg-emerald-700"
-              >
-                💳 Pay Now
-              </a>
-            ) : (
-              <div className="max-w-xs rounded-xl bg-amber-50 px-4 py-3 text-xs font-medium text-amber-800 ring-1 ring-amber-200">
-                Your payment link has not been generated yet. It will appear here once the
-                accounts team issues it.
-              </div>
-            )}
-          </div>
+          <a
+            href={result.paymentLinkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-7 py-3.5 font-semibold text-white shadow-md transition hover:bg-emerald-700"
+          >
+            💳 Pay Now
+          </a>
         </div>
       )}
     </div>
