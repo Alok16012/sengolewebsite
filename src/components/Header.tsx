@@ -248,7 +248,7 @@ export default function Header() {
 
           <div className="flex items-center gap-2">
             <Link
-              href="/application-form"
+              href="/online-information-centers"
               className="hidden items-center gap-2 rounded-[10px] bg-brand-3 px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 md:inline-flex"
             >
               🏢 Online Information Centers
@@ -405,7 +405,7 @@ export default function Header() {
               <div className="px-4 pb-3">
                 <div className="flex gap-2">
                   <Link
-                    href="/application-form"
+                    href="/online-information-centers"
                     onClick={closeMenu}
                     className="flex-1 rounded-[10px] bg-brand-3 px-4 py-2.5 text-center text-sm font-semibold text-white"
                   >
