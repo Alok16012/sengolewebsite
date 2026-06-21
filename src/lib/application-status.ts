@@ -6,6 +6,7 @@
 export type StatusResult = {
   found: true;
   applicationNo: string | null;
+  // Center name (for a center application) or student name (for a student one).
   centerName: string | null;
   approvalStatus: string | null;
   paymentStatus: string | null;
@@ -17,4 +18,16 @@ export type StatusResult = {
   submittedAt: string | null;
 };
 
+export type ApplicationKind = "center" | "student";
+
+// What the form writes to localStorage for the result page to read back. We
+// keep the back path so the result page can link to the right form (center vs
+// student) for "Check another application".
+export type StoredStatus = {
+  kind: ApplicationKind;
+  result: StatusResult;
+  backPath: string;
+};
+
 export const STATUS_STORAGE_KEY = "sengol:application-status";
+export const STATUS_RESULT_PATH = "/application-status/result";

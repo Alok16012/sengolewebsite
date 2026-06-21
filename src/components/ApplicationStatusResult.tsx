@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { STATUS_STORAGE_KEY, type StatusResult } from "@/lib/application-status";
+import { STATUS_STORAGE_KEY, type StoredStatus } from "@/lib/application-status";
 
 const approvalLabels: Record<string, { label: string; tone: string }> = {
   pending: { label: "Under Review", tone: "bg-amber-50 text-amber-700 ring-amber-200" },
@@ -54,7 +54,7 @@ const backLinkClass =
 
 export default function ApplicationStatusResult() {
   // `undefined` = still waiting for the data, `null` = nothing found.
-  const [result, setResult] = useState<StatusResult | null | undefined>(undefined);
+  const [stored, setStored] = useState<StoredStatus | null | undefined>(undefined);
 
   useEffect(() => {
     // This tab is opened by the form *before* the status fetch finishes, so the
@@ -67,11 +67,11 @@ export default function ApplicationStatusResult() {
       try {
         const raw = localStorage.getItem(STATUS_STORAGE_KEY);
         if (raw) {
-          setResult(JSON.parse(raw) as StatusResult);
+          setStored(JSON.parse(raw) as StoredStatus);
           return true;
         }
       } catch {
-        setResult(null);
+        setStored(null);
         return true;
       }
       return false;
@@ -83,14 +83,14 @@ export default function ApplicationStatusResult() {
       tries += 1;
       if (check() || tries >= maxTries) {
         clearInterval(id);
-        if (tries >= maxTries) setResult(null);
+        if (tries >= maxTries) setStored(null);
       }
     }, 250);
 
     return () => clearInterval(id);
   }, []);
 
-  if (result === undefined) {
+  if (stored === undefined) {
     return (
       <div className="rounded-2xl bg-white p-8 text-center ring-1 ring-brand-cream">
         <p className="text-[15px] text-muted">Loading your application status…</p>
@@ -98,7 +98,7 @@ export default function ApplicationStatusResult() {
     );
   }
 
-  if (!result) {
+  if (!stored) {
     return (
       <div className="rounded-2xl bg-white p-8 text-center ring-1 ring-brand-cream sm:p-10">
         <p className="text-2xl">🔍</p>
@@ -116,6 +116,8 @@ export default function ApplicationStatusResult() {
     );
   }
 
+  const result = stored.result;
+  const backPath = stored.backPath || "/application-status";
   const rejected = (result.approvalStatus ?? "").toLowerCase() === "rejected";
   const currentStep = journey.indexOf((result.approvalStatus ?? "").toLowerCase());
   const effectiveStep =
@@ -221,7 +223,7 @@ export default function ApplicationStatusResult() {
 
       <div className="mt-8 border-t border-brand-cream pt-6">
         <Link
-          href="/application-status"
+          href={backPath}
           className="text-sm font-semibold text-brand-1 underline-offset-4 hover:underline"
         >
           ← Check another application

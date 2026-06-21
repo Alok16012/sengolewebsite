@@ -179,7 +179,14 @@ export const navItems = [
       { label: "Enquiry Form", href: "/enquiry-form" },
     ],
   },
-  { label: "Track Application", href: "/application-status" },
+  {
+    label: "Track Application",
+    href: "/application-status",
+    dropdown: [
+      { label: "Center Application", href: "/application-status" },
+      { label: "Student Application", href: "/application-status/student" },
+    ],
+  },
   { label: "Contact", href: "/contact" },
 ];
 
