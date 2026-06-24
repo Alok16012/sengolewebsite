@@ -13,6 +13,7 @@ const MOBILE_COL = "mobile";
 
 type CenterRow = {
   center_name: string | null;
+  email: string | null;
   payment_amount: number | null;
   base_fee: number | null;
   amount_paid: number | null;
@@ -21,7 +22,7 @@ type CenterRow = {
 };
 
 const SELECT_FIELDS =
-  `center_name,payment_amount,base_fee,amount_paid,payment_status,` +
+  `center_name,email,payment_amount,base_fee,amount_paid,payment_status,` +
   `${APPROVAL_CODE_COL},${MOBILE_COL}`;
 
 function normalizeMobile(value: string) {
@@ -101,6 +102,7 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({
     found: true,
     centerName: row.center_name,
+    email: row.email,
     amount,
     isPaid,
   });

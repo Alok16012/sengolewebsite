@@ -6,14 +6,11 @@ const inputClass =
   "w-full rounded-xl bg-white px-4 py-3 text-[15px] text-ink ring-1 ring-brand-cream transition placeholder:text-muted/70 focus:outline-none focus:ring-2 focus:ring-brand-1";
 const labelClass = "mb-1.5 block text-sm font-semibold text-ink";
 
-type Lookup = { centerName: string | null; amount: number | null; isPaid: boolean };
-type Receipt = {
-  referenceNo: string;
-  approvalCode: string;
-  mobile: string;
+type Lookup = {
   centerName: string | null;
+  email: string | null;
   amount: number | null;
-  paidAt: string;
+  isPaid: boolean;
 };
 
 function formatINR(amount: number | null) {
@@ -25,17 +22,10 @@ function formatINR(amount: number | null) {
   }).format(amount);
 }
 
-function makeReferenceNo() {
-  const stamp = Date.now().toString(36).toUpperCase();
-  const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
-  return `OIC-${stamp}-${rand}`;
-}
-
 export default function ExistingCenterPayment() {
   const [approvalCode, setApprovalCode] = useState("");
   const [mobile, setMobile] = useState("");
   const [lookup, setLookup] = useState<Lookup | null>(null);
-  const [receipt, setReceipt] = useState<Receipt | null>(null);
   const [loading, setLoading] = useState(false);
   const [paying, setPaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -63,76 +53,50 @@ export default function ExistingCenterPayment() {
     setLoading(false);
   }
 
-  function handlePayNow() {
-    setPaying(true);
-    // Generate an acknowledgment receipt with a reference number.
-    setReceipt({
-      referenceNo: makeReferenceNo(),
-      approvalCode: approvalCode.trim(),
-      mobile: mobile.trim(),
-      centerName: lookup?.centerName ?? null,
-      amount: lookup?.amount ?? null,
-      paidAt: new Date().toLocaleString("en-IN"),
-    });
-    setPaying(false);
-  }
-
-  function reset() {
-    setApprovalCode("");
-    setMobile("");
-    setLookup(null);
-    setReceipt(null);
+  async function handlePayNow() {
+    if (!lookup) return;
     setError(null);
-  }
+    setPaying(true);
+    try {
+      const res = await fetch("/api/payu/initiate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstname: lookup.centerName || "Center",
+          email: lookup.email || "noreply@sengolinternationaluniversity.edu.in",
+          phone: mobile.trim(),
+          amount: lookup.amount,
+          productinfo: "Online Information Center Fee",
+        }),
+      });
+      const json = (await res.json()) as {
+        paymentUrl?: string;
+        params?: Record<string, string>;
+        error?: string;
+      };
+      if (!res.ok || !json.paymentUrl || !json.params) {
+        setError(json.error ?? "Could not start payment. Please try again.");
+        setPaying(false);
+        return;
+      }
 
-  // Step 3 — receipt with reference number.
-  if (receipt) {
-    return (
-      <div className="rounded-2xl bg-white p-7 ring-1 ring-brand-cream sm:p-10">
-        <div className="flex flex-col items-center text-center">
-          <span className="grid h-14 w-14 place-items-center rounded-full bg-emerald-50 text-3xl text-emerald-600 ring-1 ring-emerald-200">
-            ✓
-          </span>
-          <h3 className="mt-4 text-2xl font-extrabold text-ink">Payment Receipt</h3>
-          <p className="mt-1 text-[15px] text-muted">
-            Please save this reference number for your records.
-          </p>
-        </div>
-
-        <dl className="mt-8 divide-y divide-brand-cream">
-          {[
-            ["Reference No", receipt.referenceNo],
-            ["Center Name", receipt.centerName || "—"],
-            ["Approval Code", receipt.approvalCode],
-            ["Mobile No", receipt.mobile],
-            ["Amount Paid", formatINR(receipt.amount)],
-            ["Date & Time", receipt.paidAt],
-          ].map(([label, value]) => (
-            <div key={label} className="flex items-center justify-between gap-4 py-3">
-              <dt className="text-sm font-semibold text-muted">{label}</dt>
-              <dd className="text-right text-[15px] font-bold text-ink">{value}</dd>
-            </div>
-          ))}
-        </dl>
-
-        <div className="mt-8 flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={() => window.print()}
-            className="inline-flex items-center justify-center gap-2 rounded-xl brand-gradient px-7 py-3 font-semibold text-white shadow-md transition hover:opacity-95"
-          >
-            🖨️ Print Receipt
-          </button>
-          <button
-            type="button"
-            onClick={reset}
-            className="inline-flex items-center justify-center rounded-xl px-7 py-3 font-semibold text-brand-1 ring-1 ring-brand-cream transition hover:bg-brand-light"
-          >
-            New Payment
-          </button>
-        </div>
-      </div>
-    );
+      // Build a hidden form and POST to PayU's hosted checkout.
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = json.paymentUrl;
+      for (const [name, value] of Object.entries(json.params)) {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = name;
+        input.value = value;
+        form.appendChild(input);
+      }
+      document.body.appendChild(form);
+      form.submit();
+    } catch {
+      setError("Network error. Please check your connection and try again.");
+      setPaying(false);
+    }
   }
 
   // Steps 1 & 2 — enter details, show amount, pay.
