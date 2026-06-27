@@ -69,7 +69,7 @@ export default function Header() {
               href="/online-information-centers"
               className="hidden lg:inline-flex items-center gap-1 rounded-full bg-red-600 px-3 py-1 font-semibold text-white shadow-sm ring-1 ring-red-400/50 transition hover:bg-red-700"
             >
-              🏢 Online Information Centers
+              🏢 Admission Partner
             </Link>
             <div className="relative">
               <button
@@ -423,7 +423,7 @@ export default function Header() {
                     onClick={closeMenu}
                     className="flex-1 rounded-[10px] bg-brand-3 px-4 py-2.5 text-center text-sm font-semibold text-white"
                   >
-                    🏢 Online Information Centers
+                    🏢 Admission Partner
                   </Link>
                   <Link
                     href="/enquiry-form"

@@ -66,7 +66,7 @@ export default function ExistingCenterPayment() {
           email: lookup.email || "noreply@sengolinternationaluniversity.edu.in",
           phone: lookup.mobile || "9999999999",
           amount: lookup.amount,
-          productinfo: "Online Information Center Fee",
+          productinfo: "Admission Partner Fee",
         }),
       });
       const json = (await res.json()) as {

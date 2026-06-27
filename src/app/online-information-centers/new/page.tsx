@@ -6,18 +6,18 @@ import NewCenterRegistration from "@/components/NewCenterRegistration";
 export const metadata = {
   title: "New Computer Institute Registration | Sengol International University",
   description:
-    "Register your computer institute as a new Online Information Center with Sengol International University.",
+    "Register your computer institute as a new Admission Partner with Sengol International University.",
 };
 
 export default function NewCenterRegistrationPage() {
   return (
     <main>
       <PageBanner
-        breadcrumb="Online Information Centers"
+        breadcrumb="Admission Partners"
         eyebrow="New Computer Institute"
         icon="🎓"
         title="Register Your Institute"
-        subtitle="Fill in your center details to register as a new Online Information Center."
+        subtitle="Fill in your center details to register as a new Admission Partner."
       />
 
       <section className="bg-brand-light py-16 sm:py-20">

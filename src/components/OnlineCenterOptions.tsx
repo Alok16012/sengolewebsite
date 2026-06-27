@@ -16,7 +16,7 @@ const options: Option[] = [
   {
     value: "existing",
     label: "Existing",
-    description: "Already an Online Information Center? Pay your fee here.",
+    description: "Already an Admission Partner? Pay your fee here.",
     href: "/online-information-centers/existing",
     icon: "🏢",
     note: "Approval Code which shall be provided by Dy. Director to that center after verification of the center infrastructure on spot or through video call.",
@@ -24,7 +24,7 @@ const options: Option[] = [
   {
     value: "new",
     label: "New Computer Institute",
-    description: "Register your computer institute as a new Online Information Center.",
+    description: "Register your computer institute as a new Admission Partner.",
     href: "/online-information-centers/new",
     icon: "🎓",
   },

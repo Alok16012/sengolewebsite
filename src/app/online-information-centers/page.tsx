@@ -3,20 +3,20 @@ import Reveal from "@/components/Reveal";
 import OnlineCenterOptions from "@/components/OnlineCenterOptions";
 
 export const metadata = {
-  title: "Online Information Centers | Sengol International University",
+  title: "Admission Partners | Sengol International University",
   description:
-    "Sengol International University offers CCA / DCA / PGDCA through Online Information Centers. Choose an existing center or register a new computer institute.",
+    "Sengol International University offers CCA / DCA / PGDCA through Admission Partners. Choose an existing center or register a new computer institute.",
 };
 
 export default function OnlineInformationCentersPage() {
   return (
     <main>
       <PageBanner
-        breadcrumb="Online Information Centers"
-        eyebrow="Online Information Centers"
+        breadcrumb="Admission Partners"
+        eyebrow="Admission Partners"
         icon="🏢"
-        title="Online Information Centers"
-        subtitle="Sengol International University offers CCA / DCA / PGDCA through Online Information Centers."
+        title="Admission Partners"
+        subtitle="Sengol International University offers CCA / DCA / PGDCA through Admission Partners."
       />
 
       <section className="bg-brand-light py-16 sm:py-20">
