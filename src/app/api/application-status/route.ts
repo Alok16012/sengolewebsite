@@ -32,11 +32,10 @@ export async function POST(request: NextRequest) {
   }
 
   const applicationNo = String(body.applicationNo ?? "").trim();
-  const email = String(body.email ?? "").trim().toLowerCase();
 
-  if (!applicationNo || !email) {
+  if (!applicationNo) {
     return NextResponse.json(
-      { error: "Application number and email are required." },
+      { error: "Application number is required." },
       { status: 400 }
     );
   }
@@ -78,16 +77,13 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Match the email too, so the application number alone can't reveal data.
-  const row = rows.find(
-    (r) => (r.email ?? "").trim().toLowerCase() === email
-  );
+  const row = rows[0];
 
   if (!row) {
     return NextResponse.json(
       {
         error:
-          "No application found for that application number and email. Please check and try again.",
+          "No application found for that application number. Please check and try again.",
       },
       { status: 404 }
     );

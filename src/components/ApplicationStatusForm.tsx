@@ -44,7 +44,6 @@ export default function ApplicationStatusForm({ kind = "center", eyebrow, title 
     const data = new FormData(e.currentTarget);
     const payload = {
       applicationNo: data.get("applicationNo"),
-      email: data.get("email"),
     };
 
     try {
@@ -86,7 +85,7 @@ export default function ApplicationStatusForm({ kind = "center", eyebrow, title 
     <>
       <ContentEyebrow>{eyebrow}</ContentEyebrow>
       <SectionTitle>{title}</SectionTitle>
-      <form onSubmit={handleSubmit} className="mt-8 grid gap-5 sm:grid-cols-2">
+      <form onSubmit={handleSubmit} className="mt-8 grid gap-5">
         <div>
           <label htmlFor="applicationNo" className={labelClass}>
             Application Number *
@@ -100,27 +99,14 @@ export default function ApplicationStatusForm({ kind = "center", eyebrow, title 
             className={inputClass}
           />
         </div>
-        <div>
-          <label htmlFor="email" className={labelClass}>
-            Registered Email *
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            placeholder="Name@example.com"
-            className={inputClass}
-          />
-        </div>
 
         {error && (
-          <div className="sm:col-span-2 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700 ring-1 ring-red-200">
+          <div className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700 ring-1 ring-red-200">
             {error}
           </div>
         )}
 
-        <div className="sm:col-span-2">
+        <div>
           <button
             type="submit"
             disabled={submitting}
