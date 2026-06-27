@@ -65,6 +65,12 @@ export default function Header() {
             <span className="hidden md:inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1">
               📞 +91-9205299887
             </span>
+            <Link
+              href="/online-information-centers"
+              className="hidden lg:inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 font-medium transition hover:bg-white/25"
+            >
+              🏢 Online Information Centers
+            </Link>
             <div className="relative">
               <button
                 type="button"
@@ -253,12 +259,6 @@ export default function Header() {
             >
               💳 <span className="hidden sm:inline">Pay Now</span>
               <span className="sm:hidden">Pay</span>
-            </Link>
-            <Link
-              href="/online-information-centers"
-              className="hidden items-center gap-2 whitespace-nowrap rounded-[10px] bg-brand-3 px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 xl:inline-flex"
-            >
-              🏢 Online Information Centers
             </Link>
             <Link
               href="/application-form"
