@@ -51,7 +51,7 @@ export default function Header() {
   };
 
   return (
-    <>
+    <header className="sticky top-0 z-50">
       {/* Top utility bar */}
       <div className="brand-gradient text-white text-sm">
         <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 py-1.5">
@@ -164,9 +164,9 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Sticky nav */}
+      {/* Nav */}
       <nav
-        className={`sticky top-0 z-50 border-y border-brand-cream bg-white/95 backdrop-blur transition-shadow ${
+        className={`border-y border-brand-cream bg-white/95 backdrop-blur transition-shadow ${
           scrolled ? "shadow-[0_8px_24px_rgba(49,37,24,0.10)]" : ""
         }`}
       >
@@ -465,6 +465,6 @@ export default function Header() {
           </div>
         )}
       </nav>
-    </>
+    </header>
   );
 }
