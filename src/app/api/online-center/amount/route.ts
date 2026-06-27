@@ -1,29 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// Look up an EXISTING Online Information Center's payable amount by its
-// approval code + registered mobile number, from the admin app's Supabase
-// `centers` table.
+// Look up an EXISTING Admission Partner's payable amount by its approval code,
+// from the admin app's Supabase.
 //
-// NOTE: the column names `approval_code` and `mobile` are ASSUMED to match the
-// admin app's schema. If the admin app uses different names (e.g. `phone`,
-// `approval_no`), update APPROVAL_CODE_COL / MOBILE_COL below.
+// In the admin app an "approval code" is the first 8 hex characters of an
+// `approval`-type coupon's UUID `id` (e.g. coupon id
+// "ca0ed0f3-9c1a-4f05-..." → approval code "CA0ED0F3"). The coupon's
+// `face_value` is the amount the partner must pay, and it links to the
+// `centers` table via `center_id` for the partner's name / contact details.
 
-const APPROVAL_CODE_COL = "approval_code";
-const MOBILE_COL = "mobile";
+type CouponRow = {
+  id: string;
+  center_id: string | null;
+  face_value: number | null;
+  is_used: boolean | null;
+  is_activated: boolean | null;
+};
 
 type CenterRow = {
   center_name: string | null;
   email: string | null;
-  payment_amount: number | null;
-  base_fee: number | null;
-  amount_paid: number | null;
-  payment_status: string | null;
-  [key: string]: unknown;
+  phone: string | null;
+  contact_mobile: string | null;
 };
-
-const SELECT_FIELDS =
-  `center_name,email,payment_amount,base_fee,amount_paid,payment_status,` +
-  `${APPROVAL_CODE_COL},${MOBILE_COL}`;
 
 function normalizeMobile(value: string) {
   return value.replace(/\D/g, "").slice(-10);
@@ -37,11 +36,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
-  const approvalCode = String(body.approvalCode ?? "").trim();
+  // Accept the code as typed, then extract the leading 8 hex characters (the
+  // approval code), case-insensitively. This also tolerates someone pasting a
+  // full coupon UUID.
+  const raw = String(body.approvalCode ?? "").trim().toLowerCase();
+  const code = (raw.match(/[0-9a-f]{8}/) ?? [])[0];
 
-  if (!approvalCode) {
+  if (!code) {
     return NextResponse.json(
-      { error: "Approval code is required." },
+      { error: "Please enter a valid approval code." },
       { status: 400 }
     );
   }
@@ -55,24 +58,27 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const url =
-    `${baseUrl}/rest/v1/centers` +
-    `?${APPROVAL_CODE_COL}=eq.${encodeURIComponent(approvalCode)}` +
-    `&select=${encodeURIComponent(SELECT_FIELDS)}`;
+  const headers = { apikey: anonKey, Authorization: `Bearer ${anonKey}` };
 
-  let rows: CenterRow[];
+  // Find the approval coupon whose UUID begins with the entered code. UUIDs are
+  // ordered, so a range over the first segment matches any id with that prefix.
+  const couponUrl =
+    `${baseUrl}/rest/v1/coupons` +
+    `?id=gte.${code}-0000-0000-0000-000000000000` +
+    `&id=lte.${code}-ffff-ffff-ffff-ffffffffffff` +
+    `&coupon_type=eq.approval` +
+    `&select=id,center_id,face_value,is_used,is_activated`;
+
+  let coupons: CouponRow[];
   try {
-    const res = await fetch(url, {
-      headers: { apikey: anonKey, Authorization: `Bearer ${anonKey}` },
-      cache: "no-store",
-    });
+    const res = await fetch(couponUrl, { headers, cache: "no-store" });
     if (!res.ok) {
       return NextResponse.json(
         { error: "Could not reach the payment service. Please try again later." },
         { status: 502 }
       );
     }
-    rows = (await res.json()) as CenterRow[];
+    coupons = (await res.json()) as CouponRow[];
   } catch {
     return NextResponse.json(
       { error: "Network error. Please try again later." },
@@ -80,27 +86,43 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const row = rows[0];
-
-  if (!row) {
+  const coupon = coupons[0];
+  if (!coupon) {
     return NextResponse.json(
       {
         error:
-          "No center found for that approval code. Please check and try again.",
+          "No partner found for that approval code. Please check and try again.",
       },
       { status: 404 }
     );
   }
 
-  const isPaid = (row.payment_status ?? "").toLowerCase() === "paid";
-  const amount = row.payment_amount ?? row.base_fee ?? null;
+  // Fetch the linked partner's details (best-effort — payment can proceed even
+  // if this lookup returns nothing).
+  let center: CenterRow | undefined;
+  if (coupon.center_id) {
+    try {
+      const centerUrl =
+        `${baseUrl}/rest/v1/centers` +
+        `?id=eq.${encodeURIComponent(coupon.center_id)}` +
+        `&select=center_name,email,phone,contact_mobile`;
+      const res = await fetch(centerUrl, { headers, cache: "no-store" });
+      if (res.ok) {
+        center = ((await res.json()) as CenterRow[])[0];
+      }
+    } catch {
+      // ignore — partner details are optional
+    }
+  }
+
+  const mobileRaw = center?.contact_mobile ?? center?.phone ?? "";
 
   return NextResponse.json({
     found: true,
-    centerName: row.center_name,
-    email: row.email,
-    mobile: normalizeMobile(String(row[MOBILE_COL] ?? "")) || null,
-    amount,
-    isPaid,
+    centerName: center?.center_name ?? null,
+    email: center?.email ?? null,
+    mobile: normalizeMobile(String(mobileRaw)) || null,
+    amount: coupon.face_value ?? null,
+    isPaid: Boolean(coupon.is_used),
   });
 }
