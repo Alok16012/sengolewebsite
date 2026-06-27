@@ -20,8 +20,8 @@ export default function PageBanner({ eyebrow, title, subtitle, breadcrumb, icon 
         }}
       />
       <div className="absolute -left-16 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-brand-1/20 blur-2xl" />
-      <div className="relative mx-auto max-w-[1100px] px-4 py-16 text-center text-white sm:py-20">
-        <nav className="mb-6 flex items-center justify-center gap-2 text-sm text-white/60">
+      <div className="relative mx-auto max-w-[1100px] px-4 py-10 text-center text-white sm:py-12">
+        <nav className="mb-4 flex items-center justify-center gap-2 text-sm text-white/60">
           <Link href="/" className="inline-flex items-center gap-1 transition hover:text-brand-1">
             <span>🏠</span> Home
           </Link>
