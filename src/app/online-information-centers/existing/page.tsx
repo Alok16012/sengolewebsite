@@ -6,7 +6,7 @@ import ExistingCenterPayment from "@/components/ExistingCenterPayment";
 export const metadata = {
   title: "Existing Center Payment | Sengol International University",
   description:
-    "Existing Online Information Centers can enter their approval code and mobile number to view and pay the payable amount.",
+    "Existing Online Information Centers can enter their approval code to view and pay the payable amount.",
 };
 
 export default function ExistingCenterPaymentPage() {
@@ -17,7 +17,7 @@ export default function ExistingCenterPaymentPage() {
         eyebrow="Existing Center"
         icon="🏢"
         title="Pay Your Fee"
-        subtitle="Enter your approval code and registered mobile number to view your payable amount and complete the payment."
+        subtitle="Enter your approval code to view your payable amount and complete the payment."
       />
 
       <section className="bg-brand-light py-16 sm:py-20">

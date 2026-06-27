@@ -9,6 +9,7 @@ const labelClass = "mb-1.5 block text-sm font-semibold text-ink";
 type Lookup = {
   centerName: string | null;
   email: string | null;
+  mobile: string | null;
   amount: number | null;
   isPaid: boolean;
 };
@@ -24,7 +25,6 @@ function formatINR(amount: number | null) {
 
 export default function ExistingCenterPayment() {
   const [approvalCode, setApprovalCode] = useState("");
-  const [mobile, setMobile] = useState("");
   const [lookup, setLookup] = useState<Lookup | null>(null);
   const [loading, setLoading] = useState(false);
   const [paying, setPaying] = useState(false);
@@ -39,7 +39,7 @@ export default function ExistingCenterPayment() {
       const res = await fetch("/api/online-center/amount", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ approvalCode, mobile }),
+        body: JSON.stringify({ approvalCode }),
       });
       const json = await res.json();
       if (!res.ok) {
@@ -64,7 +64,7 @@ export default function ExistingCenterPayment() {
         body: JSON.stringify({
           firstname: lookup.centerName || "Center",
           email: lookup.email || "noreply@sengolinternationaluniversity.edu.in",
-          phone: mobile.trim(),
+          phone: lookup.mobile || "9999999999",
           amount: lookup.amount,
           productinfo: "Online Information Center Fee",
         }),
@@ -102,7 +102,7 @@ export default function ExistingCenterPayment() {
   // Steps 1 & 2 — enter details, show amount, pay.
   return (
     <div className="rounded-2xl bg-white p-7 ring-1 ring-brand-cream sm:p-10">
-      <form onSubmit={handleShowAmount} className="grid gap-5 sm:grid-cols-2">
+      <form onSubmit={handleShowAmount} className="grid gap-5">
         <div>
           <label htmlFor="approvalCode" className={labelClass}>
             Approval Code *
@@ -120,33 +120,15 @@ export default function ExistingCenterPayment() {
             className={inputClass}
           />
         </div>
-        <div>
-          <label htmlFor="mobile" className={labelClass}>
-            Mobile No *
-          </label>
-          <input
-            id="mobile"
-            value={mobile}
-            onChange={(e) => {
-              setMobile(e.target.value);
-              setLookup(null);
-            }}
-            type="tel"
-            inputMode="numeric"
-            required
-            placeholder="10-digit mobile number"
-            className={inputClass}
-          />
-        </div>
 
         {error && (
-          <div className="sm:col-span-2 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700 ring-1 ring-red-200">
+          <div className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700 ring-1 ring-red-200">
             {error}
           </div>
         )}
 
         {!lookup && (
-          <div className="sm:col-span-2">
+          <div>
             <button
               type="submit"
               disabled={loading}

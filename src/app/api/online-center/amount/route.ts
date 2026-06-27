@@ -38,11 +38,10 @@ export async function POST(request: NextRequest) {
   }
 
   const approvalCode = String(body.approvalCode ?? "").trim();
-  const mobile = normalizeMobile(String(body.mobile ?? ""));
 
-  if (!approvalCode || !mobile) {
+  if (!approvalCode) {
     return NextResponse.json(
-      { error: "Approval code and mobile number are required." },
+      { error: "Approval code is required." },
       { status: 400 }
     );
   }
@@ -81,16 +80,13 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Match the mobile too, so the approval code alone can't reveal data.
-  const row = rows.find(
-    (r) => normalizeMobile(String(r[MOBILE_COL] ?? "")) === mobile
-  );
+  const row = rows[0];
 
   if (!row) {
     return NextResponse.json(
       {
         error:
-          "No center found for that approval code and mobile number. Please check and try again.",
+          "No center found for that approval code. Please check and try again.",
       },
       { status: 404 }
     );
@@ -103,6 +99,7 @@ export async function POST(request: NextRequest) {
     found: true,
     centerName: row.center_name,
     email: row.email,
+    mobile: normalizeMobile(String(row[MOBILE_COL] ?? "")) || null,
     amount,
     isPaid,
   });
