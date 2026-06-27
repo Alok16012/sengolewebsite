@@ -40,9 +40,10 @@ export type PayuRequest = {
   productinfo: string;
   firstname: string;
   email: string;
+  udf1?: string;
 };
 
-// Request hash: sha512(key|txnid|amount|productinfo|firstname|email|||||||||||salt)
+// Request hash: sha512(key|txnid|amount|productinfo|firstname|email|udf1|||||||||||salt)
 export function buildRequestHash(req: PayuRequest, key: string, salt: string) {
   const sequence = [
     key,
@@ -51,7 +52,7 @@ export function buildRequestHash(req: PayuRequest, key: string, salt: string) {
     req.productinfo,
     req.firstname,
     req.email,
-    "", "", "", "", "", // udf1-5
+    req.udf1 ?? "", "", "", "", "", // udf1-5
     "", "", "", "", "", // PayU reserved fields
     salt,
   ].join("|");

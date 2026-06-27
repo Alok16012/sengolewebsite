@@ -67,6 +67,7 @@ export default function ExistingCenterPayment() {
           phone: lookup.mobile || "9999999999",
           amount: lookup.amount,
           productinfo: "Admission Partner Fee",
+          udf1: approvalCode.trim(),
         }),
       });
       const json = (await res.json()) as {
