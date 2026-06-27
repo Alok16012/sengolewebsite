@@ -67,7 +67,7 @@ export default function Header() {
             </span>
             <Link
               href="/online-information-centers"
-              className="hidden lg:inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 font-medium transition hover:bg-white/25"
+              className="hidden lg:inline-flex items-center gap-1 rounded-full bg-red-600 px-3 py-1 font-semibold text-white shadow-sm ring-1 ring-red-400/50 transition hover:bg-red-700"
             >
               🏢 Online Information Centers
             </Link>
