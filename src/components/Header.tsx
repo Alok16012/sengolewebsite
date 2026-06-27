@@ -51,7 +51,7 @@ export default function Header() {
   };
 
   return (
-    <header className="relative z-50">
+    <>
       {/* Top utility bar */}
       <div className="brand-gradient text-white text-sm">
         <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 py-1.5">
@@ -465,6 +465,6 @@ export default function Header() {
           </div>
         )}
       </nav>
-    </header>
+    </>
   );
 }
