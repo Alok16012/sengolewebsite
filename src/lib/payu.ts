@@ -91,3 +91,44 @@ export function verifyResponseHash(
 export function newTxnId() {
   return `SIU${Date.now()}${crypto.randomBytes(4).toString("hex")}`;
 }
+
+// Mark the approval coupon identified by `rawCode` as used/paid in the admin
+// app's Supabase and store the PayU transaction id. The approval code is the
+// first 8 hex chars of an approval-type coupon's UUID id (tolerates a full
+// UUID being passed too). Best-effort and idempotent: calling it twice for the
+// same coupon just re-writes the same paid state, so the browser callback and
+// the server-to-server webhook can both run safely.
+export async function markCouponPaid(rawCode: string, txnid: string) {
+  const code = (rawCode.trim().toLowerCase().match(/[0-9a-f]{8}/) ?? [])[0];
+  if (!code) return;
+
+  const baseUrl = process.env.SUPABASE_URL;
+  const anonKey = process.env.SUPABASE_ANON_KEY;
+  if (!baseUrl || !anonKey) return;
+
+  const url =
+    `${baseUrl}/rest/v1/coupons` +
+    `?id=gte.${code}-0000-0000-0000-000000000000` +
+    `&id=lte.${code}-ffff-ffff-ffff-ffffffffffff` +
+    `&coupon_type=eq.approval`;
+
+  try {
+    await fetch(url, {
+      method: "PATCH",
+      headers: {
+        apikey: anonKey,
+        Authorization: `Bearer ${anonKey}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      cache: "no-store",
+      body: JSON.stringify({
+        is_used: true,
+        used_at: new Date().toISOString(),
+        payment_txn_id: txnid,
+      }),
+    });
+  } catch {
+    // best-effort — never throw from the payment notification path
+  }
+}
