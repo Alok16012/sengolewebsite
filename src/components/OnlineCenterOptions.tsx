@@ -15,7 +15,7 @@ type Option = {
 const options: Option[] = [
   {
     value: "existing",
-    label: "Existing",
+    label: "Pay Admission Partner Fee",
     description: "Already an Admission Partner? Pay your fee here.",
     href: "/online-information-centers/existing",
     icon: "🏢",
