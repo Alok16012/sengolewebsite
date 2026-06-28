@@ -24,9 +24,9 @@ export async function POST(request: NextRequest) {
 
   // On a verified successful payment, mark the matching approval coupon as paid
   // in the admin app's Supabase and record the PayU transaction id. The approval
-  // code travels through PayU in udf1. Best-effort: never block the redirect.
+  // code is embedded at the front of the txnid. Best-effort: never block redirect.
   if (success) {
-    await markCouponPaid(params.udf1 ?? "", params.txnid ?? "");
+    await markCouponPaid(params.txnid ?? "", params.txnid ?? "");
   }
 
   const dest = success ? "/pay-now/success" : "/pay-now/failure";

@@ -40,10 +40,14 @@ export type PayuRequest = {
   productinfo: string;
   firstname: string;
   email: string;
-  udf1?: string;
 };
 
-// Request hash: sha512(key|txnid|amount|productinfo|firstname|email|udf1|||||||||||salt)
+// Request hash: sha512(key|txnid|amount|productinfo|firstname|email|||||||||||salt)
+// NOTE: we deliberately do NOT use PayU's udf fields. Some PayU integrations
+// don't echo udf values back in the redirect response, which breaks response
+// hash verification. Instead, the approval code rides inside the txnid (which
+// PayU always returns verbatim and includes in both hashes), so verification
+// stays on the proven, udf-free path.
 export function buildRequestHash(req: PayuRequest, key: string, salt: string) {
   const sequence = [
     key,
@@ -52,7 +56,7 @@ export function buildRequestHash(req: PayuRequest, key: string, salt: string) {
     req.productinfo,
     req.firstname,
     req.email,
-    req.udf1 ?? "", "", "", "", "", // udf1-5
+    "", "", "", "", "", // udf1-5
     "", "", "", "", "", // PayU reserved fields
     salt,
   ].join("|");
@@ -88,7 +92,14 @@ export function verifyResponseHash(
   return expected === (params.hash ?? "").toLowerCase();
 }
 
-export function newTxnId() {
+// Build a unique PayU transaction id. When an approval `code` is given, embed
+// it at the FRONT of the txnid (lowercased 8 hex chars) so the callback can
+// recover it from PayU's response — PayU returns the txnid verbatim. Kept well
+// under PayU's 25-char limit. Without a code, falls back to a plain id.
+export function newTxnId(code?: string) {
+  const norm = (code ?? "").trim().toLowerCase().match(/[0-9a-f]{8}/)?.[0];
+  const rand = crypto.randomBytes(2).toString("hex"); // 4 chars
+  if (norm) return `${norm}${Date.now().toString(36)}${rand}`; // ~20 chars
   return `SIU${Date.now()}${crypto.randomBytes(4).toString("hex")}`;
 }
 

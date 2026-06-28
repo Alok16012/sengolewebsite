@@ -17,7 +17,9 @@ export async function POST(request: NextRequest) {
   const email = String(body.email ?? "").trim();
   const phone = String(body.phone ?? "").trim();
   const productinfo = String(body.productinfo ?? "Fee Payment").trim();
-  const udf1 = String(body.udf1 ?? "").trim();
+  // Approval code (if this is an existing-partner payment) rides inside the
+  // txnid, not a udf field. Accept either `udf1` or `approvalCode` for it.
+  const approvalCode = String(body.udf1 ?? body.approvalCode ?? "").trim();
   const rawAmount = Number(body.amount);
 
   if (!firstname || !email || !phone) {
@@ -44,10 +46,10 @@ export async function POST(request: NextRequest) {
   }
 
   const amount = rawAmount.toFixed(2);
-  const txnid = newTxnId();
+  const txnid = newTxnId(approvalCode);
 
   const hash = buildRequestHash(
-    { txnid, amount, productinfo, firstname, email, udf1 },
+    { txnid, amount, productinfo, firstname, email },
     config.key,
     config.salt
   );
@@ -65,7 +67,6 @@ export async function POST(request: NextRequest) {
       firstname,
       email,
       phone,
-      udf1,
       surl: `${origin}/api/payu/callback`,
       furl: `${origin}/api/payu/callback`,
       hash,

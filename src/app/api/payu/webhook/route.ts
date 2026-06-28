@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (valid && params.status === "success") {
-    await markCouponPaid(params.udf1 ?? "", params.txnid ?? "");
+    await markCouponPaid(params.txnid ?? "", params.txnid ?? "");
   }
 
   // PayU just needs a 200 to consider the notification delivered.
