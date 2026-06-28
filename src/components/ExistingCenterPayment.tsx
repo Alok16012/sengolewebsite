@@ -143,9 +143,6 @@ export default function ExistingCenterPayment() {
 
       {lookup && (
         <div className="mt-6 border-t border-brand-cream pt-6">
-          {lookup.centerName && (
-            <p className="text-[15px] text-ink/80">{lookup.centerName}</p>
-          )}
           <div className="mt-2 flex items-end justify-between gap-4">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-muted">
