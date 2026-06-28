@@ -36,18 +36,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
-  // Accept the code as typed, then extract the leading 8 hex characters (the
-  // approval code), case-insensitively. This also tolerates someone pasting a
-  // full coupon UUID.
-  const raw = String(body.approvalCode ?? "").trim().toLowerCase();
-  const code = (raw.match(/[0-9a-f]{8}/) ?? [])[0];
-
-  if (!code) {
+  // Accept whatever the partner was given. Two forms are supported:
+  //   1. The full coupon_code (e.g. "CPNA93B932820").
+  //   2. The "approval code" = the leading 8 hex chars of the coupon's UUID
+  //      (e.g. "BE4A92E9"); a full coupon UUID is tolerated too.
+  const rawInput = String(body.approvalCode ?? "").trim();
+  if (!rawInput) {
     return NextResponse.json(
       { error: "Please enter a valid approval code." },
       { status: 400 }
     );
   }
+  const code = (rawInput.toLowerCase().match(/[0-9a-f]{8}/) ?? [])[0];
 
   const baseUrl = process.env.SUPABASE_URL;
   const anonKey = process.env.SUPABASE_ANON_KEY;
@@ -59,34 +59,40 @@ export async function POST(request: NextRequest) {
   }
 
   const headers = { apikey: anonKey, Authorization: `Bearer ${anonKey}` };
+  const select = "select=id,center_id,face_value,is_used,is_activated";
 
-  // Find the approval coupon whose UUID begins with the entered code. UUIDs are
-  // ordered, so a range over the first segment matches any id with that prefix.
-  const couponUrl =
-    `${baseUrl}/rest/v1/coupons` +
-    `?id=gte.${code}-0000-0000-0000-000000000000` +
-    `&id=lte.${code}-ffff-ffff-ffff-ffffffffffff` +
-    `&coupon_type=eq.approval` +
-    `&select=id,center_id,face_value,is_used,is_activated`;
+  async function findCoupon(query: string): Promise<CouponRow | undefined> {
+    const res = await fetch(`${baseUrl}/rest/v1/coupons?${query}&${select}`, {
+      headers,
+      cache: "no-store",
+    });
+    if (!res.ok) throw new Error("lookup failed");
+    return ((await res.json()) as CouponRow[])[0];
+  }
 
-  let coupons: CouponRow[];
+  let coupon: CouponRow | undefined;
   try {
-    const res = await fetch(couponUrl, { headers, cache: "no-store" });
-    if (!res.ok) {
-      return NextResponse.json(
-        { error: "Could not reach the payment service. Please try again later." },
-        { status: 502 }
+    // 1) Exact coupon_code match (the code printed for the partner).
+    coupon = await findCoupon(
+      `coupon_code=eq.${encodeURIComponent(rawInput.toUpperCase())}` +
+        `&coupon_type=eq.approval`
+    );
+    // 2) Fallback: treat the input as the UUID-prefix approval code. UUIDs are
+    //    ordered, so a range over the first segment matches that prefix.
+    if (!coupon && code) {
+      coupon = await findCoupon(
+        `id=gte.${code}-0000-0000-0000-000000000000` +
+          `&id=lte.${code}-ffff-ffff-ffff-ffffffffffff` +
+          `&coupon_type=eq.approval`
       );
     }
-    coupons = (await res.json()) as CouponRow[];
   } catch {
     return NextResponse.json(
-      { error: "Network error. Please try again later." },
+      { error: "Could not reach the payment service. Please try again later." },
       { status: 502 }
     );
   }
 
-  const coupon = coupons[0];
   if (!coupon) {
     return NextResponse.json(
       {
@@ -119,6 +125,10 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json({
     found: true,
+    // The canonical approval code (first 8 hex of the coupon UUID). The client
+    // sends this to PayU so the txnid carries the right code regardless of
+    // whether the partner typed the coupon_code or the approval code.
+    approvalCode: coupon.id.slice(0, 8),
     centerName: center?.center_name ?? null,
     email: center?.email ?? null,
     mobile: normalizeMobile(String(mobileRaw)) || null,

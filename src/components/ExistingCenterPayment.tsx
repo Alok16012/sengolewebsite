@@ -7,6 +7,7 @@ const inputClass =
 const labelClass = "mb-1.5 block text-sm font-semibold text-ink";
 
 type Lookup = {
+  approvalCode: string | null;
   centerName: string | null;
   email: string | null;
   mobile: string | null;
@@ -70,7 +71,9 @@ export default function ExistingCenterPayment() {
           phone: lookup.mobile || "9999999999",
           amount: lookup.amount,
           productinfo: "Admission Partner Fee",
-          udf1: approvalCode.trim(),
+          // Use the canonical approval code resolved by the lookup, not the raw
+          // typed value (the partner may have typed the coupon_code instead).
+          udf1: lookup.approvalCode ?? approvalCode.trim(),
         }),
       });
       const json = (await res.json()) as {
