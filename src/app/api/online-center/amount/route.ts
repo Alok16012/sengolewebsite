@@ -15,6 +15,7 @@ type CouponRow = {
   face_value: number | null;
   is_used: boolean | null;
   is_activated: boolean | null;
+  payment_txn_id: string | null;
 };
 
 type CenterRow = {
@@ -59,7 +60,8 @@ export async function POST(request: NextRequest) {
   }
 
   const headers = { apikey: anonKey, Authorization: `Bearer ${anonKey}` };
-  const select = "select=id,center_id,face_value,is_used,is_activated";
+  const select =
+    "select=id,center_id,face_value,is_used,is_activated,payment_txn_id";
 
   async function findCoupon(query: string): Promise<CouponRow | undefined> {
     const res = await fetch(`${baseUrl}/rest/v1/coupons?${query}&${select}`, {
@@ -133,9 +135,12 @@ export async function POST(request: NextRequest) {
     email: center?.email ?? null,
     mobile: normalizeMobile(String(mobileRaw)) || null,
     amount: coupon.face_value ?? null,
-    // A code is "spent" once it's been used (paid via PayU) OR the admin has
-    // marked it Approved/Activated (is_activated) in the admin app. Either way
-    // the fee is settled, so the website must not charge for it again.
-    isPaid: Boolean(coupon.is_used || coupon.is_activated),
+    // A code is "spent" (must not be charged again) once any of these hold:
+    //  - payment_txn_id is set  → already paid online, awaiting verification
+    //  - is_activated           → Account Dept verified the payment
+    //  - is_used                → a center has been created from it
+    isPaid: Boolean(
+      coupon.payment_txn_id || coupon.is_activated || coupon.is_used
+    ),
   });
 }

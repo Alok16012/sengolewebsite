@@ -174,9 +174,11 @@ export async function markCouponPaid(rawCode: string, txnid: string) {
         Prefer: "return=minimal",
       },
       cache: "no-store",
+      // Record ONLY the payment reference here — do NOT mark the code used.
+      // "used" means a center has actually been created from this code (done
+      // later in the admin app). Payment just makes it "paid, awaiting Account
+      // Dept verification"; verification then activates it (is_activated).
       body: JSON.stringify({
-        is_used: true,
-        used_at: new Date().toISOString(),
         payment_txn_id: txnid,
       }),
     });
