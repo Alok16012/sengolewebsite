@@ -44,6 +44,9 @@ export default function ExistingCenterPayment() {
       const json = await res.json();
       if (!res.ok) {
         setError(json.error ?? "Could not fetch the amount. Please try again.");
+      } else if ((json as Lookup).isPaid) {
+        // Already-paid codes are spent — show nothing but a clear message.
+        setError("This approval code has already been used. The fee is already paid.");
       } else {
         setLookup(json as Lookup);
       }
@@ -154,20 +157,14 @@ export default function ExistingCenterPayment() {
             </div>
           </div>
 
-          {lookup.isPaid ? (
-            <p className="mt-6 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700 ring-1 ring-emerald-200">
-              This center&apos;s fee is already marked as paid.
-            </p>
-          ) : (
-            <button
-              type="button"
-              onClick={handlePayNow}
-              disabled={paying}
-              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-7 py-3.5 font-semibold text-white shadow-md transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
-            >
-              {paying ? "Processing…" : "💳 Pay Now"}
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={handlePayNow}
+            disabled={paying}
+            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-7 py-3.5 font-semibold text-white shadow-md transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+          >
+            {paying ? "Processing…" : "💳 Pay Now"}
+          </button>
         </div>
       )}
     </div>
