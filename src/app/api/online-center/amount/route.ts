@@ -133,6 +133,9 @@ export async function POST(request: NextRequest) {
     email: center?.email ?? null,
     mobile: normalizeMobile(String(mobileRaw)) || null,
     amount: coupon.face_value ?? null,
-    isPaid: Boolean(coupon.is_used),
+    // A code is "spent" once it's been used (paid via PayU) OR the admin has
+    // marked it Approved/Activated (is_activated) in the admin app. Either way
+    // the fee is settled, so the website must not charge for it again.
+    isPaid: Boolean(coupon.is_used || coupon.is_activated),
   });
 }

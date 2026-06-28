@@ -46,8 +46,9 @@ export default function ExistingCenterPayment() {
       if (!res.ok) {
         setError(json.error ?? "Could not fetch the amount. Please try again.");
       } else if ((json as Lookup).isPaid) {
-        // Already-paid codes are spent — show nothing but a clear message.
-        setError("This approval code has already been used. The fee is already paid.");
+        // Spent codes (paid via PayU, or marked Approved/Activated by the admin)
+        // must not be charged again — show a clear message instead of an amount.
+        setError("This approval code is already approved / paid. No further payment is required.");
       } else {
         setLookup(json as Lookup);
       }
