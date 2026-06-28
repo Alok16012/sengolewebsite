@@ -14,6 +14,20 @@ export default async function PaymentFailurePage({
   const txnid = typeof sp.txnid === "string" ? sp.txnid : "";
   const reason = typeof sp.reason === "string" ? sp.reason : "";
 
+  // TEMP DEBUG: decode the diagnostic dump passed by the callback.
+  let dbg = "";
+  if (typeof sp.dbg === "string") {
+    try {
+      dbg = JSON.stringify(
+        JSON.parse(Buffer.from(sp.dbg, "base64url").toString("utf8")),
+        null,
+        2
+      );
+    } catch {
+      dbg = "";
+    }
+  }
+
   return (
     <main>
       <PageBanner
@@ -43,6 +57,12 @@ export default async function PaymentFailurePage({
               <p className="mt-5 rounded-xl bg-brand-light/60 px-5 py-3 text-sm text-ink">
                 Reference: <span className="break-all font-semibold">{txnid}</span>
               </p>
+            )}
+
+            {dbg && (
+              <pre className="mt-5 max-h-80 overflow-auto rounded-xl bg-ink/90 px-4 py-3 text-left text-[11px] leading-relaxed text-white">
+                {dbg}
+              </pre>
             )}
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">

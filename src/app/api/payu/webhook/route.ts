@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getPayuConfig, markCouponPaid, verifyResponseHash } from "@/lib/payu";
+import {
+  getPayuConfig,
+  markCouponPaid,
+  verifyPaymentByTxnid,
+  verifyResponseHash,
+} from "@/lib/payu";
 
 // PayU server-to-server (S2S) webhook. Unlike the browser `callback`, PayU's
 // servers POST here directly, so it fires even if the customer closes the
@@ -26,16 +31,29 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  let valid = false;
+  const txnid = params.txnid ?? "";
+
+  // Primary: authoritative server-to-server status check.
+  let success = false;
   try {
-    const { key, salt } = getPayuConfig();
-    valid = verifyResponseHash(params, key, salt);
+    const tx = await verifyPaymentByTxnid(txnid);
+    if (tx && String(tx.status).toLowerCase() === "success") success = true;
   } catch {
-    valid = false;
+    // fall back to hash verification
+  }
+  if (!success) {
+    try {
+      const { key, salt } = getPayuConfig();
+      if (params.status === "success" && verifyResponseHash(params, key, salt)) {
+        success = true;
+      }
+    } catch {
+      // ignore
+    }
   }
 
-  if (valid && params.status === "success") {
-    await markCouponPaid(params.txnid ?? "", params.txnid ?? "");
+  if (success) {
+    await markCouponPaid(txnid, txnid);
   }
 
   // PayU just needs a 200 to consider the notification delivered.

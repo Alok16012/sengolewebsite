@@ -66,13 +66,17 @@ export function buildRequestHash(req: PayuRequest, key: string, salt: string) {
 
 // Reverse hash for verifying PayU's response:
 // sha512(salt|status||||||||||udf5|udf4|udf3|udf2|udf1|email|firstname|productinfo|amount|txnid|key)
+// When PayU's live account applies `additionalCharges`, that value is prefixed:
+// sha512(additionalCharges|salt|status|...|key). We accept either form.
 export function verifyResponseHash(
   params: Record<string, string>,
   key: string,
   salt: string
 ) {
-  const sequence = [
-    salt,
+  const received = (params.hash ?? "").toLowerCase();
+  if (!received) return false;
+
+  const core = [
     params.status ?? "",
     "", "", "", "", "", // PayU reserved fields
     params.udf5 ?? "",
@@ -86,10 +90,47 @@ export function verifyResponseHash(
     params.amount ?? "",
     params.txnid ?? "",
     key,
-  ].join("|");
+  ];
 
-  const expected = crypto.createHash("sha512").update(sequence).digest("hex");
-  return expected === (params.hash ?? "").toLowerCase();
+  const candidates = [[salt, ...core].join("|")];
+  if (params.additionalCharges) {
+    candidates.push([params.additionalCharges, salt, ...core].join("|"));
+  }
+
+  return candidates.some(
+    (seq) => crypto.createHash("sha512").update(seq).digest("hex") === received
+  );
+}
+
+// Authoritative server-to-server status check. Independent of the response
+// hash, so it works even when PayU's redirect response is shaped unexpectedly.
+// Returns the transaction record (with `status`, `amt`, etc.) or null.
+export async function verifyPaymentByTxnid(
+  txnid: string
+): Promise<Record<string, string> | null> {
+  const { key, salt, mode } = getPayuConfig();
+  const command = "verify_payment";
+  const hash = crypto
+    .createHash("sha512")
+    .update(`${key}|${command}|${txnid}|${salt}`)
+    .digest("hex");
+
+  const endpoint =
+    mode === "live"
+      ? "https://info.payu.in/merchant/postservice.php?form=2"
+      : "https://test.payu.in/merchant/postservice.php?form=2";
+
+  const body = new URLSearchParams({ key, command, var1: txnid, hash });
+  const res = await fetch(endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+    cache: "no-store",
+  });
+  const json = (await res.json()) as {
+    transaction_details?: Record<string, Record<string, string>>;
+  };
+  return json?.transaction_details?.[txnid] ?? null;
 }
 
 // Build a unique PayU transaction id. When an approval `code` is given, embed
