@@ -29,7 +29,7 @@ const departments = [
   "School of Education & Physical Education",
   "School of Law",
   "School of Pharmacy",
-  "School of Para-Medical Science",
+  "School of Allied and Healthcare Sciences",
   "School of Hotel Management",
   "School of Architecture & Planning",
   "School of Journalism & Mass Media Communication",

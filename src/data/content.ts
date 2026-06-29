@@ -10,7 +10,7 @@ export const programs = [
   { title: "School of Education and Physical Education", img: "/courseImages/Education-and-Physical-Education.png", slug: "school_education_physical_education" },
   { title: "School of Journalism & Mass Media Communication", img: "/courseImages/School-of-Journalism-&-Mass-Media-Communication.jpg", slug: "school_journalism_mass_media_communication" },
   { title: "School of Law", img: "/courseImages/School-of-Law.jpg", slug: "school_law" },
-  { title: "School of Para-Medical Science", img: "/courseImages/School-of-Para-Medical-Science.jpg", slug: "school_para_medical_science" },
+  { title: "School of Allied and Healthcare Sciences", img: "/courseImages/School-of-Para-Medical-Science.jpg", slug: "school_para_medical_science" },
   { title: "School of Philosophy and Research", img: "/courseImages/School-of-Philosophy-and-Research.jpg", slug: "school_philosophy_research" },
   { title: "School of Fire & Safety", img: "/courseImages/School-of-Fire-&-Safety.jpg", slug: "school_fire_safety" },
   { title: "School of Animation", img: "/courseImages/School-of-Animation.jpg", slug: "school_animation" },

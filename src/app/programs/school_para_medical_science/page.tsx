@@ -3,7 +3,7 @@ import ProgramTemplate, { type ProgramData } from "@/components/ProgramTemplate"
 const data: ProgramData = {
   slug: "school_para_medical_science",
   eyebrow: "Healthcare Excellence",
-  title: "School of Para-Medical Science",
+  title: "School of Allied and Healthcare Sciences",
   description:
     "Training compassionate healthcare professionals through comprehensive medical education, clinical practice, and advanced healthcare technology.",
   features: [
@@ -45,21 +45,21 @@ const data: ProgramData = {
     { label: "PG Diploma Program", courses: [] },
   ],
   intro: {
-    heading: "Paramedical Sciences Programmes - An Introduction",
-    text: "Paramedical sciences encompass a wide range of healthcare professions that support medical practitioners in diagnosing, treating, and managing patients. These fields include nursing, medical laboratory technology, radiology, and more. Paramedical professionals play a crucial role in delivering quality healthcare services and ensuring patient safety.",
+    heading: "Allied and Healthcare Sciences Programmes - An Introduction",
+    text: "Allied and healthcare sciences encompass a wide range of healthcare professions that support medical practitioners in diagnosing, treating, and managing patients. These fields include nursing, medical laboratory technology, radiology, and more. Allied and healthcare professionals play a crucial role in delivering quality healthcare services and ensuring patient safety.",
   },
   about: {
-    heading: "About School of Paramedical Sciences",
-    text: "The School of Paramedical Sciences offers a comprehensive range of undergraduate, postgraduate, diploma, and certificate programs designed to equip students with the skills needed to excel in the healthcare industry. With a focus on practical learning, research-driven education, and industry collaboration, the school aims to produce highly skilled paramedical professionals ready to contribute to healthcare.",
+    heading: "About School of Allied and Healthcare Sciences",
+    text: "The School of Allied and Healthcare Sciences offers a comprehensive range of undergraduate, postgraduate, diploma, and certificate programs designed to equip students with the skills needed to excel in the healthcare industry. With a focus on practical learning, research-driven education, and industry collaboration, the school aims to produce highly skilled allied and healthcare professionals ready to contribute to healthcare.",
   },
   objective: {
     heading: "Objective",
-    lead: "The programmes under the School of Paramedical Sciences are designed to enable students to:",
+    lead: "The programmes under the School of Allied and Healthcare Sciences are designed to enable students to:",
     points: [
-      "Provide a strong foundation in paramedical sciences and practices",
+      "Provide a strong foundation in allied and healthcare sciences and practices",
       "Develop skills in patient care, diagnostics, and treatment",
       "Enhance understanding of healthcare systems and protocols",
-      "Foster research and analytical skills in the field of paramedical sciences",
+      "Foster research and analytical skills in the field of allied and healthcare sciences",
       "Prepare students for successful careers in various sectors of healthcare",
     ],
   },
