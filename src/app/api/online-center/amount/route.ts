@@ -15,6 +15,7 @@ type CouponRow = {
   face_value: number | null;
   is_used: boolean | null;
   is_activated: boolean | null;
+  activated_at: string | null;
   payment_txn_id: string | null;
 };
 
@@ -61,7 +62,7 @@ export async function POST(request: NextRequest) {
 
   const headers = { apikey: anonKey, Authorization: `Bearer ${anonKey}` };
   const select =
-    "select=id,center_id,face_value,is_used,is_activated,payment_txn_id";
+    "select=id,center_id,face_value,is_used,is_activated,activated_at,payment_txn_id";
 
   async function findCoupon(query: string): Promise<CouponRow | undefined> {
     const res = await fetch(`${baseUrl}/rest/v1/coupons?${query}&${select}`, {
@@ -135,12 +136,16 @@ export async function POST(request: NextRequest) {
     email: center?.email ?? null,
     mobile: normalizeMobile(String(mobileRaw)) || null,
     amount: coupon.face_value ?? null,
-    // A code is "spent" (must not be charged again) once any of these hold:
-    //  - payment_txn_id is set  → already paid online, awaiting verification
-    //  - is_activated           → Account Dept verified the payment
-    //  - is_used                → a center has been created from it
-    isPaid: Boolean(
-      coupon.payment_txn_id || coupon.is_activated || coupon.is_used
+    // A code is "spent" / active (must not be charged again) once it is
+    // activated, or a center has been created from it.
+    isPaid: Boolean(coupon.is_activated || coupon.is_used),
+    // A code that was activated/paid before but is now switched off by the admin
+    // (is_activated = false while it has an activated_at or a payment reference).
+    // Such a code is not payable online — the partner must get it re-activated.
+    isInactive: Boolean(
+      !coupon.is_activated &&
+        !coupon.is_used &&
+        (coupon.activated_at || coupon.payment_txn_id)
     ),
   });
 }
