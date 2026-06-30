@@ -13,7 +13,6 @@ type Lookup = {
   mobile: string | null;
   amount: number | null;
   isPaid: boolean;
-  isInactive: boolean;
 };
 
 function formatINR(amount: number | null) {
@@ -46,13 +45,10 @@ export default function ExistingCenterPayment() {
       const json = await res.json();
       if (!res.ok) {
         setError(json.error ?? "Could not fetch the amount. Please try again.");
-      } else if ((json as Lookup).isInactive) {
-        // Activated before but switched off by the admin — not payable online.
-        setError("Your Approval Code is inactive. To request activation, please contact the Deputy Director or fill out the Enquiry Form.");
       } else if ((json as Lookup).isPaid) {
         // Spent codes (paid via PayU, or marked Approved/Activated by the admin)
         // must not be charged again — show a clear message instead of an amount.
-        setError("This approval code is already approved / paid. No further payment is required.");
+        setError("Your Approval Code is inactive. To request activation, please contact the Deputy Director or fill out the Enquiry Form.");
       } else {
         setLookup(json as Lookup);
       }
