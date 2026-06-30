@@ -135,12 +135,13 @@ export async function POST(request: NextRequest) {
     email: center?.email ?? null,
     mobile: normalizeMobile(String(mobileRaw)) || null,
     amount: coupon.face_value ?? null,
-    // A code is "spent" (must not be charged again) once any of these hold:
-    //  - payment_txn_id is set  → already paid online, awaiting verification
-    //  - is_activated           → Account Dept verified the payment
-    //  - is_used                → a center has been created from it
-    isPaid: Boolean(
-      coupon.payment_txn_id || coupon.is_activated || coupon.is_used
+    // Verified by the Account Dept (is_activated) or already consumed (is_used) —
+    // nothing more to pay.
+    isPaid: Boolean(coupon.is_activated || coupon.is_used),
+    // Paid online (payment_txn_id) but not yet verified by the Account Dept —
+    // the payment is under review, so don't ask the partner to pay again.
+    isReviewing: Boolean(
+      coupon.payment_txn_id && !coupon.is_activated && !coupon.is_used
     ),
   });
 }
