@@ -51,7 +51,7 @@ export default function ExistingCenterPayment() {
         setError("Payment reviewing — your payment is under review by the Account Department. Your approval code will be activated once it is verified.");
       } else if ((json as Lookup).isPaid) {
         // Already verified / used — must not be charged again.
-        setError("Your Approval Code is inactive. To request activation, please contact the Deputy Director or fill out the Enquiry Form.");
+        setError("This approval code is already approved / paid. No further payment is required.");
       } else {
         setLookup(json as Lookup);
       }
