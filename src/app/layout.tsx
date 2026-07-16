@@ -21,7 +21,6 @@ export const metadata: Metadata = {
   title: "Sengol International University | Premier Educational Institute in India",
   description:
     "Sengol International University is committed to delivering quality education that blends tradition with modernity, shaping professionals ready to meet the challenges of a dynamic world.",
-  icons: { icon: "/favicon.ico" },
 };
 
 export default function RootLayout({
