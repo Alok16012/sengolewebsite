@@ -126,6 +126,7 @@ export const footerColumns = [
       { label: "Lateral Entry", href: "/admission/lateral-entry" },
       { label: "Refund Policy", href: "/admission/refund-policy" },
       { label: "Credit Transfer Policy", href: "/admission/credit-transfer" },
+      { label: "Terms & Conditions", href: "/terms-and-conditions" },
     ],
   },
 ];
