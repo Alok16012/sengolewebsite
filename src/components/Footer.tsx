@@ -114,8 +114,19 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/10 py-6 text-center text-sm text-white/50">
-        © 2026 <span className="text-brand-1">Sengol International University</span> - All rights
-        reserved.
+        <p>
+          © 2026 <span className="text-brand-1">Sengol International University</span> - All rights
+          reserved.
+        </p>
+        <p className="mt-2">
+          <a href="/terms-and-conditions" className="transition hover:text-brand-1">
+            Terms &amp; Conditions
+          </a>
+          <span className="mx-2">·</span>
+          <a href="/admission/refund-policy" className="transition hover:text-brand-1">
+            Refund Policy
+          </a>
+        </p>
       </div>
     </footer>
   );

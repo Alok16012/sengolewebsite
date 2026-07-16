@@ -1,3 +1,4 @@
+import Link from "next/link";
 import PageBanner from "@/components/PageBanner";
 import PaymentForm from "@/components/PaymentForm";
 import Reveal from "@/components/Reveal";
@@ -38,6 +39,16 @@ export default function PayNowPage() {
                   secure gateway to finish your payment.
                 </p>
                 <PaymentForm />
+                <p className="mt-6 text-sm text-muted">
+                  By proceeding with a payment, you agree to our{" "}
+                  <Link
+                    href="/terms-and-conditions"
+                    className="font-semibold text-brand-1 underline transition hover:opacity-80"
+                  >
+                    Terms &amp; Conditions for Online Fee Payment
+                  </Link>
+                  .
+                </p>
               </div>
             </Reveal>
 
