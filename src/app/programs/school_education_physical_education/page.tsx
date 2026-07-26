@@ -37,7 +37,12 @@ const data: ProgramData = {
       ],
     },
     { label: "Master's Program", courses: [] },
-    { label: "Diploma Program", courses: [] },
+    {
+      label: "Diploma Program",
+      courses: [
+        { name: "Diploma in Early Childhood Care And Education", duration: "2 Semesters", eligibility: "10+2 (Any Stream)" },
+      ],
+    },
     { label: "Certificate Program", courses: [] },
   ],
   intro: {
