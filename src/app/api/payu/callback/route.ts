@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
+  confirmStudentPayment,
   getPayuConfig,
   markCouponPaid,
   verifyPaymentByTxnid,
@@ -47,8 +48,13 @@ export async function POST(request: NextRequest) {
   }
 
   if (success) {
-    // The approval code is embedded at the front of the txnid.
-    await markCouponPaid(txnid, txnid);
+    // Two kinds of payment come back through here. A student fee was recorded
+    // as an intent before checkout, so the transaction id alone identifies it;
+    // if it is not one of those, the txnid carries an approval code at its
+    // front. Trying the student flow first keeps an ordinary /pay-now txnid
+    // from being read as a coupon prefix by coincidence.
+    const wasStudentFee = await confirmStudentPayment(txnid);
+    if (!wasStudentFee) await markCouponPaid(txnid, txnid);
   }
 
   const dest = success ? "/pay-now/success" : "/pay-now/failure";

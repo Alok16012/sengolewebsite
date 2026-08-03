@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { rpc } from "@/lib/supabaseRpc";
 
 // PayU's public sandbox credentials. Documented openly by PayU and only valid
 // on the test gateway (no real money). Used as a fallback so test mode works
@@ -144,44 +145,45 @@ export function newTxnId(code?: string) {
   return `SIU${Date.now()}${crypto.randomBytes(4).toString("hex")}`;
 }
 
-// Mark the approval coupon identified by `rawCode` as used/paid in the admin
-// app's Supabase and store the PayU transaction id. The approval code is the
-// first 8 hex chars of an approval-type coupon's UUID id (tolerates a full
-// UUID being passed too). Best-effort and idempotent: calling it twice for the
-// same coupon just re-writes the same paid state, so the browser callback and
-// the server-to-server webhook can both run safely.
+// A transaction id for a student fee payment. Unlike an approval code, nothing
+// about the student is encoded here — the details are stored server-side as a
+// payment intent keyed by this id, so a tampered response cannot claim to be a
+// different student or a different amount.
+export function newStudentTxnId() {
+  return `SFEE${Date.now().toString(36)}${crypto.randomBytes(3).toString("hex")}`;
+}
+
+// Complete a student fee payment that was recorded as an intent before
+// checkout. Returns true when the transaction belonged to a student, which is
+// how the callback tells a student payment apart from an approval-code one.
+export async function confirmStudentPayment(txnid: string) {
+  try {
+    return Boolean(await rpc<boolean>("student_payment_confirm", { p_txn: txnid }));
+  } catch {
+    return false;
+  }
+}
+
+// Record a verified payment against the approval coupon whose code is embedded
+// at the front of the txnid. Best-effort and idempotent, so the browser
+// callback and the server-to-server webhook can both run safely.
+//
+// The function records ONLY the payment reference — it does NOT mark the code
+// used or activated. "Used" means a center was actually created from the code,
+// and activation is the Account Dept's decision in the admin app; paying just
+// makes it "paid, awaiting verification".
+//
+// This used to PATCH the `coupons` table directly over a UUID-prefix range with
+// the anon key. That stopped working when coupons were closed to anon, and the
+// range trick was unsound anyway: a plain /pay-now txnid like
+// "SIU1751234567890abc" has 8 leading digits that the regex happily read as a
+// coupon prefix, so an unrelated payment still fired a write at the table.
+// approval_code_mark_paid matches a real coupon or does nothing.
 export async function markCouponPaid(rawCode: string, txnid: string) {
   const code = (rawCode.trim().toLowerCase().match(/[0-9a-f]{8}/) ?? [])[0];
   if (!code) return;
-
-  const baseUrl = process.env.SUPABASE_URL;
-  const anonKey = process.env.SUPABASE_ANON_KEY;
-  if (!baseUrl || !anonKey) return;
-
-  const url =
-    `${baseUrl}/rest/v1/coupons` +
-    `?id=gte.${code}-0000-0000-0000-000000000000` +
-    `&id=lte.${code}-ffff-ffff-ffff-ffffffffffff` +
-    `&coupon_type=eq.approval`;
-
   try {
-    await fetch(url, {
-      method: "PATCH",
-      headers: {
-        apikey: anonKey,
-        Authorization: `Bearer ${anonKey}`,
-        "Content-Type": "application/json",
-        Prefer: "return=minimal",
-      },
-      cache: "no-store",
-      // Record ONLY the payment reference here — do NOT mark the code used.
-      // "used" means a center has actually been created from this code (done
-      // later in the admin app). Payment just makes it "paid, awaiting Account
-      // Dept verification"; verification then activates it (is_activated).
-      body: JSON.stringify({
-        payment_txn_id: txnid,
-      }),
-    });
+    await rpc<boolean>("approval_code_mark_paid", { p_code: code, p_txn: txnid });
   } catch {
     // best-effort — never throw from the payment notification path
   }

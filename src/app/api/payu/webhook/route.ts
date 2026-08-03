@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
+  confirmStudentPayment,
   getPayuConfig,
   markCouponPaid,
   verifyPaymentByTxnid,
@@ -53,7 +54,12 @@ export async function POST(request: NextRequest) {
   }
 
   if (success) {
-    await markCouponPaid(txnid, txnid);
+    // Same two-kinds handling as the browser callback: a student fee is
+    // identified by its pre-recorded intent, everything else carries an
+    // approval code at the front of the txnid. Both paths are idempotent, so
+    // it does not matter which of the two notifications arrives first.
+    const wasStudentFee = await confirmStudentPayment(txnid);
+    if (!wasStudentFee) await markCouponPaid(txnid, txnid);
   }
 
   // PayU just needs a 200 to consider the notification delivered.

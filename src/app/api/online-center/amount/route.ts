@@ -1,28 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rpc } from "@/lib/supabaseRpc";
 
-// Look up an EXISTING Admission Partner's payable amount by its approval code,
-// from the admin app's Supabase.
+// Look up an EXISTING Admission Partner's payable amount by its approval code.
 //
-// In the admin app an "approval code" is the first 8 hex characters of an
-// `approval`-type coupon's UUID `id` (e.g. coupon id
-// "ca0ed0f3-9c1a-4f05-..." → approval code "CA0ED0F3"). The coupon's
-// `face_value` is the amount the partner must pay, and it links to the
-// `centers` table via `center_id` for the partner's name / contact details.
+// The partner may type either the printed coupon code ("CPNB8F953A330") or the
+// "approval code" — the first 8 hex characters of the coupon's UUID. Both forms
+// are handled inside the database function.
+//
+// This used to read the `coupons` and `centers` tables straight through
+// PostgREST with the anon key. Those tables are no longer anon-readable (the
+// anon key ships in public JavaScript, so anyone holding it could read or mint
+// approval codes), and this lookup quietly began answering "no partner found"
+// for every code. It now goes through approval_code_lookup, which returns just
+// these fields. See website_public_api.sql in the admin app repo.
 
-type CouponRow = {
-  id: string;
-  center_id: string | null;
-  face_value: number | null;
-  is_used: boolean | null;
-  is_activated: boolean | null;
-  payment_txn_id: string | null;
-};
-
-type CenterRow = {
+type LookupRow = {
+  approval_code: string;
+  amount: number | null;
+  is_paid: boolean;
+  is_reviewing: boolean;
   center_name: string | null;
-  email: string | null;
-  phone: string | null;
-  contact_mobile: string | null;
+  center_email: string | null;
+  center_phone: string | null;
 };
 
 function normalizeMobile(value: string) {
@@ -37,10 +36,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
-  // Accept whatever the partner was given. Two forms are supported:
-  //   1. The full coupon_code (e.g. "CPNA93B932820").
-  //   2. The "approval code" = the leading 8 hex chars of the coupon's UUID
-  //      (e.g. "BE4A92E9"); a full coupon UUID is tolerated too.
   const rawInput = String(body.approvalCode ?? "").trim();
   if (!rawInput) {
     return NextResponse.json(
@@ -48,54 +43,25 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     );
   }
-  const code = (rawInput.toLowerCase().match(/[0-9a-f]{8}/) ?? [])[0];
 
-  const baseUrl = process.env.SUPABASE_URL;
-  const anonKey = process.env.SUPABASE_ANON_KEY;
-  if (!baseUrl || !anonKey) {
-    return NextResponse.json(
-      { error: "Payment lookup is not configured. Please contact support." },
-      { status: 500 }
-    );
-  }
-
-  const headers = { apikey: anonKey, Authorization: `Bearer ${anonKey}` };
-  const select =
-    "select=id,center_id,face_value,is_used,is_activated,payment_txn_id";
-
-  async function findCoupon(query: string): Promise<CouponRow | undefined> {
-    const res = await fetch(`${baseUrl}/rest/v1/coupons?${query}&${select}`, {
-      headers,
-      cache: "no-store",
-    });
-    if (!res.ok) throw new Error("lookup failed");
-    return ((await res.json()) as CouponRow[])[0];
-  }
-
-  let coupon: CouponRow | undefined;
+  let rows: LookupRow[];
   try {
-    // 1) Exact coupon_code match (the code printed for the partner).
-    coupon = await findCoupon(
-      `coupon_code=eq.${encodeURIComponent(rawInput.toUpperCase())}` +
-        `&coupon_type=eq.approval`
-    );
-    // 2) Fallback: treat the input as the UUID-prefix approval code. UUIDs are
-    //    ordered, so a range over the first segment matches that prefix.
-    if (!coupon && code) {
-      coupon = await findCoupon(
-        `id=gte.${code}-0000-0000-0000-000000000000` +
-          `&id=lte.${code}-ffff-ffff-ffff-ffffffffffff` +
-          `&coupon_type=eq.approval`
+    rows = await rpc<LookupRow[]>("approval_code_lookup", { p_code: rawInput });
+  } catch (err) {
+    if (err instanceof Error && err.message === "not-configured") {
+      return NextResponse.json(
+        { error: "Payment lookup is not configured. Please contact support." },
+        { status: 500 }
       );
     }
-  } catch {
     return NextResponse.json(
       { error: "Could not reach the payment service. Please try again later." },
       { status: 502 }
     );
   }
 
-  if (!coupon) {
+  const row = rows?.[0];
+  if (!row) {
     return NextResponse.json(
       {
         error:
@@ -105,43 +71,18 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Fetch the linked partner's details (best-effort — payment can proceed even
-  // if this lookup returns nothing).
-  let center: CenterRow | undefined;
-  if (coupon.center_id) {
-    try {
-      const centerUrl =
-        `${baseUrl}/rest/v1/centers` +
-        `?id=eq.${encodeURIComponent(coupon.center_id)}` +
-        `&select=center_name,email,phone,contact_mobile`;
-      const res = await fetch(centerUrl, { headers, cache: "no-store" });
-      if (res.ok) {
-        center = ((await res.json()) as CenterRow[])[0];
-      }
-    } catch {
-      // ignore — partner details are optional
-    }
-  }
-
-  const mobileRaw = center?.contact_mobile ?? center?.phone ?? "";
-
   return NextResponse.json({
     found: true,
-    // The canonical approval code (first 8 hex of the coupon UUID). The client
-    // sends this to PayU so the txnid carries the right code regardless of
-    // whether the partner typed the coupon_code or the approval code.
-    approvalCode: coupon.id.slice(0, 8),
-    centerName: center?.center_name ?? null,
-    email: center?.email ?? null,
-    mobile: normalizeMobile(String(mobileRaw)) || null,
-    amount: coupon.face_value ?? null,
-    // Verified by the Account Dept (is_activated) or already consumed (is_used) —
-    // nothing more to pay.
-    isPaid: Boolean(coupon.is_activated || coupon.is_used),
-    // Paid online (payment_txn_id) but not yet verified by the Account Dept —
-    // the payment is under review, so don't ask the partner to pay again.
-    isReviewing: Boolean(
-      coupon.payment_txn_id && !coupon.is_activated && !coupon.is_used
-    ),
+    // The canonical approval code. The client sends this on to PayU so the
+    // txnid carries the right code however the partner typed it.
+    approvalCode: row.approval_code,
+    centerName: row.center_name,
+    email: row.center_email,
+    mobile: normalizeMobile(String(row.center_phone ?? "")) || null,
+    amount: row.amount,
+    // Verified by the Account Dept, or already consumed — nothing left to pay.
+    isPaid: Boolean(row.is_paid),
+    // Paid online but not yet verified — don't ask the partner to pay twice.
+    isReviewing: Boolean(row.is_reviewing),
   });
 }
