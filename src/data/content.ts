@@ -121,7 +121,6 @@ export const footerColumns = [
     icon: "📝",
     links: [
       { label: "Admission Procedure", href: "/admission/admission-procedure" },
-      { label: "Application Form", href: "/application-form" },
       { label: "Admission Notice", href: "/admission/admission-notice" },
       { label: "Lateral Entry", href: "/admission/lateral-entry" },
       { label: "Refund Policy", href: "/admission/refund-policy" },
@@ -176,7 +175,6 @@ export const navItems = [
       { label: "Lateral Entry", href: "/admission/lateral-entry" },
       { label: "Credit Transfer", href: "/admission/credit-transfer" },
       { label: "Refund Policy", href: "/admission/refund-policy" },
-      { label: "Application Form", href: "/application-form" },
       { label: "Enquiry Form", href: "/enquiry-form" },
     ],
   },
@@ -217,7 +215,6 @@ export const admissionMenu = [
   { label: "Lateral Entry", href: "/admission/lateral-entry", icon: "↗️" },
   { label: "Credit Transfer", href: "/admission/credit-transfer", icon: "🔄" },
   { label: "Refund Policy", href: "/admission/refund-policy", icon: "💰" },
-  { label: "Application Form", href: "/application-form", icon: "📝" },
 ];
 
 export const programsMenu = programs.map((p) => ({

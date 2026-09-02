@@ -254,9 +254,8 @@ export default function ResearchPage() {
 
         <CTABand
           title="Begin Your Doctoral Journey"
-          text="Take the next step in your academic career with a Ph.D. at Sengol International University. Download the application form and apply before 31 May 2026."
-          primary={{ label: "Download Application Form", href: "/application-form" }}
-          secondary={{ label: "Contact Dean – Research", href: "/contact" }}
+          text="Take the next step in your academic career with a Ph.D. at Sengol International University. Contact the Dean – Research for the application process before 31 May 2026."
+          primary={{ label: "Contact Dean – Research", href: "/contact" }}
         />
       </SectionLayout>
     </main>

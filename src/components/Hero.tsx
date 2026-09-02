@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 const quickActions = [
-  { icon: "🎓", title: "Admission 2026", sub: "Apply Now", href: "/application-form" },
   { icon: "📝", title: "Enquiry Now", sub: "Get in touch", href: "/enquiry-form" },
   { icon: "🏆", title: "Scholarships", sub: "Up to 100% waiver", href: "/admission/admission-procedure" },
 ];
@@ -41,17 +40,17 @@ export default function Hero() {
 
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row lg:justify-start">
             <Link
-              href="/application-form"
+              href="/programs/school_engineering_technology"
               className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-7 py-3.5 font-semibold text-brand-1 shadow-lg shadow-black/20 transition hover:bg-white/90 sm:w-auto"
             >
-              Apply Now
+              Explore Programs
               <span className="transition group-hover:translate-x-1">→</span>
             </Link>
             <Link
-              href="/programs/school_engineering_technology"
+              href="/enquiry-form"
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white/10 px-7 py-3.5 font-semibold text-white ring-1 ring-white/30 backdrop-blur transition hover:bg-white/20 sm:w-auto"
             >
-              Explore Programs
+              Enquiry Now
             </Link>
           </div>
         </div>
@@ -103,7 +102,7 @@ export default function Hero() {
 
       {/* Quick action cards — horizontal scroll on mobile, grid on desktop */}
       <div className="relative mx-auto max-w-[1400px] pb-14">
-        <div className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:px-6">
+        <div className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-6">
           {quickActions.map((c) => (
             <Link
               key={c.title}

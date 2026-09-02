@@ -88,8 +88,7 @@ export default function MissionVisionPage() {
         <CTABand
           title="Ready to Be Part of Our Vision?"
           text="Join us in creating a future where education transforms lives and builds a better world."
-          primary={{ label: "Apply Now", href: "/admission/application-form" }}
-          secondary={{ label: "Learn More", href: "/about" }}
+          primary={{ label: "Learn More", href: "/about" }}
         />
       </SectionLayout>
     </main>

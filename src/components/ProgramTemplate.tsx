@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import PageBanner from "@/components/PageBanner";
 import SectionLayout from "@/components/SectionLayout";
 import Reveal from "@/components/Reveal";
@@ -95,13 +94,12 @@ export default function ProgramTemplate({ data }: { data: ProgramData }) {
                     <th className="px-4 py-3 font-semibold">Course Name</th>
                     <th className="px-4 py-3 font-semibold">Duration</th>
                     <th className="px-4 py-3 font-semibold">Eligibility</th>
-                    <th className="px-4 py-3 font-semibold">Apply</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-brand-cream bg-white">
                   {activeTab.courses.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="px-4 py-8 text-center text-muted">
+                      <td colSpan={4} className="px-4 py-8 text-center text-muted">
                         Programs will be announced soon.
                       </td>
                     </tr>
@@ -112,14 +110,6 @@ export default function ProgramTemplate({ data }: { data: ProgramData }) {
                         <td className="px-4 py-3 font-semibold text-ink">{c.name}</td>
                         <td className="px-4 py-3 text-ink/70">{c.duration}</td>
                         <td className="px-4 py-3 text-ink/70">{c.eligibility}</td>
-                        <td className="px-4 py-3">
-                          <Link
-                            href="/application-form"
-                            className="brand-gradient inline-flex rounded-lg px-3 py-1.5 text-xs font-semibold text-white"
-                          >
-                            Apply Now
-                          </Link>
-                        </td>
                       </tr>
                     ))
                   )}

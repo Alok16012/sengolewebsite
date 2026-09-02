@@ -144,8 +144,7 @@ export default function CreditTransferPage() {
         <CTABand
           title="Ready to Transfer Your Credits?"
           text="Continue your academic journey with seamless credit transfer at Sengol International University. Credit transfer decisions are made on a case-by-case basis."
-          primary={{ label: "Apply for Credit Transfer", href: "/application-form" }}
-          secondary={{ label: "Contact Academic Office", href: "/contact" }}
+          primary={{ label: "Contact Academic Office", href: "/contact" }}
         />
       </SectionLayout>
     </main>

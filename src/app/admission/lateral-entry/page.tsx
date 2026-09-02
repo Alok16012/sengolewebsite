@@ -134,8 +134,7 @@ export default function LateralEntryPage() {
         <CTABand
           title="Ready to Continue Your Education?"
           text="Take advantage of our lateral entry program and fast-track your academic journey with Sengol International University."
-          primary={{ label: "Apply for Lateral Entry", href: "/application-form" }}
-          secondary={{ label: "Get More Information", href: "/contact" }}
+          primary={{ label: "Get More Information", href: "/contact" }}
         />
       </SectionLayout>
     </main>

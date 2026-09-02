@@ -260,13 +260,6 @@ export default function Header() {
               💳 <span className="hidden sm:inline">Pay Now</span>
               <span className="sm:hidden">Pay</span>
             </Link>
-            <Link
-              href="/application-form"
-              className="brand-gradient inline-flex items-center gap-1.5 whitespace-nowrap rounded-[10px] px-3.5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 sm:gap-2 sm:px-4"
-            >
-              🎓 <span className="hidden sm:inline">Apply Now</span>
-              <span className="sm:hidden">Apply</span> <span>→</span>
-            </Link>
           </div>
         </div>
 

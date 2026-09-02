@@ -185,8 +185,7 @@ export default function AdmissionProcedurePage() {
         <CTABand
           title="Ready to Begin Your Application?"
           text="Follow our simple and transparent admission process to secure your place at Sengol International University."
-          primary={{ label: "Start Application", href: "/application-form" }}
-          secondary={{ label: "Download Brochure", href: "/contact" }}
+          primary={{ label: "Download Brochure", href: "/contact" }}
         />
       </SectionLayout>
     </main>
