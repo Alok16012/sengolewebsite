@@ -21,11 +21,7 @@ export default function Hero() {
       <div className="relative mx-auto grid max-w-[1400px] items-center gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-8 lg:py-20">
         {/* Text column */}
         <div className="animate-fade-in-up text-center lg:text-left">
-          <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-brand-cream ring-1 ring-white/20 backdrop-blur">
-            🎓 Admissions Open · 2026-2027
-          </span>
-
-          <h1 className="font-display mt-5 text-[2.6rem] font-extrabold leading-[1.05] tracking-tight sm:text-6xl lg:text-[4.2rem]">
+          <h1 className="font-display text-[2.6rem] font-extrabold leading-[1.05] tracking-tight sm:text-6xl lg:text-[4.2rem]">
             <span className="block text-brand-cream">Discover.</span>
             <span className="block bg-gradient-to-r from-[#f0883e] via-brand-1 to-[#f0883e] bg-clip-text text-transparent">
               Learn.

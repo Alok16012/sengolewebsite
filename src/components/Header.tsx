@@ -60,9 +60,6 @@ export default function Header() {
           </span>
           <div className="flex items-center gap-3 ml-auto text-[13px]">
             <span className="hidden md:inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1">
-              🎓 Admission Open: 2026-2027
-            </span>
-            <span className="hidden md:inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1">
               📞 +91-9205299887
             </span>
             <Link

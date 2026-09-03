@@ -32,7 +32,6 @@ export const noticeBoard = [
   "Submission of Applications to Ph.D. Programme 2026-27",
   "Apply for scholarships and financial aid programs",
   "Apply for Information Center",
-  "Admissions Open for 2026",
   "Student ID Card Renewal Process",
   "Pay Application Fee",
   "Admission Confirmation",
