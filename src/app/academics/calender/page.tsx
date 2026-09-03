@@ -2,7 +2,7 @@ import PageBanner from "@/components/PageBanner";
 import SectionLayout from "@/components/SectionLayout";
 import Reveal from "@/components/Reveal";
 import { academicsMenu } from "@/data/content";
-import { ContentEyebrow, SectionTitle, FeatureGrid, CTABand } from "@/components/content-blocks";
+import { ContentEyebrow, FeatureGrid, CTABand } from "@/components/content-blocks";
 
 const calendarActivities = [
   { activity: "📝 Admission/Registration", date: "05 July – 30 Aug 2026" },
@@ -63,7 +63,6 @@ export default function AcademicCalendarPage() {
       >
         <Reveal>
           <ContentEyebrow>📅 Academic Calendar</ContentEyebrow>
-          <SectionTitle>Academic Calendar (Session 2026–27)</SectionTitle>
           <p className="mt-4 text-[15px] leading-relaxed text-ink/80">
             Sengol International University&apos;s academic calendar outlines key dates, breaks, and
             holidays for the 2026–27 session to help students and faculty plan ahead.

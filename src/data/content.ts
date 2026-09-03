@@ -159,13 +159,6 @@ export const navItems = [
     dropdown: programs.map((p) => ({ label: p.title, href: `/programs/${p.slug}` })),
   },
   {
-    label: "Research",
-    href: "/research",
-    dropdown: [
-      { label: "Ph.D. Admission Notification", href: "/research" },
-    ],
-  },
-  {
     label: "Admission",
     href: "/admission/admission-procedure",
     dropdown: [
