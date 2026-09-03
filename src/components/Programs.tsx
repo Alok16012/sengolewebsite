@@ -42,11 +42,10 @@ export default function Programs() {
                   <h3 className="mb-4 min-h-[3rem] text-lg font-bold leading-snug text-ink">
                     {p.title}
                   </h3>
-                  <div className="mb-4 flex items-center justify-between text-sm">
+                  <div className="mb-4 flex items-center text-sm">
                     <span className="inline-flex items-center gap-1.5 text-muted">
                       <span className="h-2.5 w-2.5 rounded-full bg-brand-1" /> Available
                     </span>
-                    <span className="text-muted">2026-27</span>
                   </div>
                   <a
                     href="#"
