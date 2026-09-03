@@ -97,7 +97,7 @@ export default function Header() {
                       onClick={() => setLoginOpen(false)}
                       className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition hover:bg-brand-cream hover:text-brand-1"
                     >
-                      🏛️ Centre Login
+                      🏛️ Admin Login
                     </a>
                     <a
                       href="https://sengoleit.vercel.app/student/login"
@@ -384,7 +384,7 @@ export default function Header() {
                     onClick={closeMenu}
                     className="flex items-center justify-center gap-1.5 rounded-[10px] bg-brand-cream px-3 py-2.5 text-sm font-semibold text-brand-1 transition hover:bg-brand-1 hover:text-white"
                   >
-                    🏛️ Centre
+                    🏛️ Admin
                   </a>
                   <a
                     href="https://sengoleit.vercel.app/student/login"
