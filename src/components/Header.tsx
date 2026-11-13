@@ -100,7 +100,7 @@ export default function Header() {
                       🏛️ Admin Login
                     </a>
                     <a
-                      href="https://portal.sengolinternationaluniversity.edu.in/student/login"
+                      href="/student/login"
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => setLoginOpen(false)}
@@ -387,7 +387,7 @@ export default function Header() {
                     🏛️ Admin
                   </a>
                   <a
-                    href="https://portal.sengolinternationaluniversity.edu.in/student/login"
+                    href="/student/login"
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={closeMenu}
