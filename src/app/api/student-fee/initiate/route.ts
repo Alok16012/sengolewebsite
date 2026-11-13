@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { withPortalCors } from "@/lib/portalCors";
 import { buildRequestHash, getPayuConfig, newStudentTxnId } from "@/lib/payu";
 import { rpc } from "@/lib/supabaseRpc";
 
@@ -17,7 +18,7 @@ const LABEL: Record<string, string> = {
   admit_card: "Admit Card Fee",
 };
 
-export async function POST(request: NextRequest) {
+async function handle(request: NextRequest): Promise<NextResponse> {
   let body: Record<string, unknown>;
   try {
     body = await request.json();
@@ -112,3 +113,5 @@ export async function POST(request: NextRequest) {
     },
   });
 }
+
+export const POST = withPortalCors(handle);

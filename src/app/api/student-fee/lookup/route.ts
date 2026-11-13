@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { withPortalCors } from "@/lib/portalCors";
 import { rpc } from "@/lib/supabaseRpc";
 
 // What a student currently owes: the re-registration fee for their next term,
@@ -28,7 +29,7 @@ type FeeRow = {
   admit_card_fee: number | null;
 };
 
-export async function POST(request: NextRequest) {
+async function handle(request: NextRequest): Promise<NextResponse> {
   let body: Record<string, unknown>;
   try {
     body = await request.json();
@@ -96,3 +97,5 @@ export async function POST(request: NextRequest) {
     admitCardFee: row.admit_card_fee ?? 0,
   });
 }
+
+export const POST = withPortalCors(handle);
