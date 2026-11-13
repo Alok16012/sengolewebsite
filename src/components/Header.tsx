@@ -91,7 +91,7 @@ export default function Header() {
                   />
                   <div className="absolute right-0 top-full z-50 mt-2 w-52 overflow-hidden rounded-xl border border-brand-cream bg-white text-ink shadow-[0_18px_40px_rgba(49,37,24,0.18)]">
                     <a
-                      href="https://sengoleit.vercel.app/login"
+                      href="https://portal.sengolinternationaluniversity.edu.in/login"
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => setLoginOpen(false)}
@@ -100,7 +100,7 @@ export default function Header() {
                       🏛️ Admin Login
                     </a>
                     <a
-                      href="https://sengoleit.vercel.app/student/login"
+                      href="https://portal.sengolinternationaluniversity.edu.in/student/login"
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => setLoginOpen(false)}
@@ -378,7 +378,7 @@ export default function Header() {
                 </span>
                 <div className="mt-2 grid grid-cols-2 gap-2">
                   <a
-                    href="https://sengoleit.vercel.app/login"
+                    href="https://portal.sengolinternationaluniversity.edu.in/login"
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={closeMenu}
@@ -387,7 +387,7 @@ export default function Header() {
                     🏛️ Admin
                   </a>
                   <a
-                    href="https://sengoleit.vercel.app/student/login"
+                    href="https://portal.sengolinternationaluniversity.edu.in/student/login"
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={closeMenu}
