@@ -91,7 +91,7 @@ export default function Header() {
                   />
                   <div className="absolute right-0 top-full z-50 mt-2 w-52 overflow-hidden rounded-xl border border-brand-cream bg-white text-ink shadow-[0_18px_40px_rgba(49,37,24,0.18)]">
                     <a
-                      href="https://portal.sengolinternationaluniversity.edu.in/login"
+                      href="/login"
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => setLoginOpen(false)}
@@ -378,7 +378,7 @@ export default function Header() {
                 </span>
                 <div className="mt-2 grid grid-cols-2 gap-2">
                   <a
-                    href="https://portal.sengolinternationaluniversity.edu.in/login"
+                    href="/login"
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={closeMenu}
