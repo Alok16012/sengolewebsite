@@ -123,6 +123,10 @@ export default function Footer() {
             Terms &amp; Conditions
           </a>
           <span className="mx-2">·</span>
+          <a href="/privacy-policy" className="transition hover:text-brand-1">
+            Privacy Policy
+          </a>
+          <span className="mx-2">·</span>
           <a href="/admission/refund-policy" className="transition hover:text-brand-1">
             Refund Policy
           </a>

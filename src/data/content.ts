@@ -125,6 +125,7 @@ export const footerColumns = [
       { label: "Refund Policy", href: "/admission/refund-policy" },
       { label: "Credit Transfer Policy", href: "/admission/credit-transfer" },
       { label: "Terms & Conditions", href: "/terms-and-conditions" },
+      { label: "Privacy Policy", href: "/privacy-policy" },
     ],
   },
 ];
