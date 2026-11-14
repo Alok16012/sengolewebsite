@@ -11,11 +11,13 @@ import { rpc } from "@/lib/supabaseRpc";
 // the intent is stored — keyed by the transaction id — is the PayU form
 // returned, which is also how the callback later knows whose payment it was.
 
-const KINDS = new Set(["re_registration", "admit_card"]);
+const KINDS = new Set(["re_registration", "admit_card", "fee"]);
 
 const LABEL: Record<string, string> = {
   re_registration: "Re-Registration Fee",
   admit_card: "Admit Card Fee",
+  // Student portal "Pay Now": any amount the student types (Rs 1 - 5,00,000).
+  fee: "University Fee",
 };
 
 async function handle(request: NextRequest): Promise<NextResponse> {
